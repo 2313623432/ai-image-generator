@@ -240,8 +240,9 @@ input,textarea,select{font-family:inherit;outline:none}
       <div class="setting-group">
         <label>识图模型</label>
         <select class="form-select" id="visionModel">
+          <option value="qwen3-vl-plus" selected>Qwen3-VL-Plus</option>
           <option value="qwen-vl-max-latest">Qwen-VL-Max</option>
-          <option value="qwen-vl-plus-latest">Qwen-VL-Plus</option>
+          <option value="qwen-vl-plus-latest">Qwen-VL-Plus(旧)</option>
           <option value="glm-4v-plus">GLM-4V-Plus</option>
           <option value="gpt-4o">GPT-4o</option>
         </select>
@@ -291,7 +292,7 @@ input,textarea,select{font-family:inherit;outline:none}
 const DEFAULT_CONFIG = {
   apiBaseUrl: 'https://lingyao.world',
   apiKey: '',
-  visionModel: 'qwen-vl-max-latest',
+  visionModel: 'qwen3-vl-plus',
   imageModel: 'gpt-image-2',
   imageSize: '1024x1024',
   imageQuality: 'medium'
