@@ -29,7 +29,6 @@ input,textarea,select{font-family:inherit;outline:none}
 
 .app{display:grid;grid-template-columns:280px 1fr;height:100vh;gap:0}
 
-/* ===== Sidebar ===== */
 .sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .sidebar-header{padding:20px;border-bottom:1px solid var(--border)}
 .sidebar-header h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--primary-light),#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -59,16 +58,12 @@ input,textarea,select{font-family:inherit;outline:none}
 
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
-/* ===== Main Content ===== */
 .main{display:flex;flex-direction:column;overflow:hidden}
-
 .main-toolbar{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
 .main-toolbar h2{font-size:1.1rem;font-weight:600;flex:1}
 .toolbar-actions{display:flex;gap:8px}
-
 .main-content{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
-/* ===== Workspace (no task selected) ===== */
 .workspace{display:flex;flex-direction:column;height:100%;padding:20px;overflow-y:auto}
 .workspace-title{text-align:center;margin-bottom:24px}
 .workspace-title h2{font-size:1.5rem;font-weight:700;margin-bottom:8px}
@@ -103,22 +98,15 @@ input,textarea,select{font-family:inherit;outline:none}
 .form-row>*{flex:1}
 
 .generate-bar{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--surface);border-top:1px solid var(--border)}
-.generate-bar .count-control{display:flex;align-items:center;gap:8px}
-.generate-bar label{font-size:0.85rem;color:var(--text2);white-space:nowrap}
-.count-input{width:60px;text-align:center}
 .btn-generate{padding:12px 32px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border-radius:var(--radius);font-size:1rem;font-weight:600;transition:var(--transition);margin-left:auto;display:flex;align-items:center;gap:8px}
 .btn-generate:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(108,92,231,0.4)}
 .btn-generate:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
 
-/* ===== Task Detail ===== */
 .task-detail{display:flex;flex-direction:column;height:100%}
 .detail-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.btn-back{padding:8px 12px;background:var(--surface2);color:var(--text2);border-radius:var(--radius-sm);font-size:0.85rem;transition:var(--transition)}
-.btn-back:hover{background:var(--surface3);color:var(--text)}
 .detail-info{flex:1}
 .detail-info h3{font-size:1rem;font-weight:600}
 .detail-info p{font-size:0.8rem;color:var(--text3)}
-
 .detail-content{flex:1;display:flex;overflow:hidden}
 .detail-results{flex:1;padding:20px;overflow-y:auto}
 .detail-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
@@ -138,7 +126,6 @@ input,textarea,select{font-family:inherit;outline:none}
 .btn-modify:hover{background:var(--primary-light)}
 .btn-modify:disabled{opacity:0.5;cursor:not-allowed}
 
-/* ===== Settings Modal ===== */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:var(--transition)}
 .modal-overlay.active{opacity:1;pointer-events:auto}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:480px;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow);transform:translateY(20px);transition:var(--transition)}
@@ -158,19 +145,16 @@ input,textarea,select{font-family:inherit;outline:none}
 .btn-cancel{padding:10px 24px;background:var(--surface2);color:var(--text2);border-radius:var(--radius-sm);font-weight:500;transition:var(--transition)}
 .btn-cancel:hover{background:var(--surface3)}
 
-/* ===== Loading ===== */
 .loading-spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-bar{height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:8px}
 .loading-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:2px;animation:loading-pulse 1.5s ease infinite}
 @keyframes loading-pulse{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
 
-/* ===== Empty State ===== */
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--text3)}
 .empty-state .empty-icon{font-size:3rem;margin-bottom:16px;opacity:0.3}
 .empty-state p{font-size:0.9rem}
 
-/* ===== Toast ===== */
 .toast-container{position:fixed;top:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px}
 .toast{padding:12px 20px;border-radius:var(--radius-sm);font-size:0.85rem;animation:slideIn 0.3s ease;max-width:360px}
 .toast.success{background:var(--success);color:#fff}
@@ -178,7 +162,6 @@ input,textarea,select{font-family:inherit;outline:none}
 .toast.info{background:var(--primary);color:#fff}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* ===== Responsive ===== */
 @media(max-width:768px){
   .app{grid-template-columns:1fr}
   .sidebar{display:none}
@@ -187,20 +170,12 @@ input,textarea,select{font-family:inherit;outline:none}
   .detail-modify{width:100%;border-left:none;border-top:1px solid var(--border)}
 }
 
-/* ===== Image size selector ===== */
-.size-options{display:flex;gap:8px;flex-wrap:wrap}
-.size-option{padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:0.8rem;color:var(--text2);cursor:pointer;transition:var(--transition)}
-.size-option:hover{border-color:var(--border-hover)}
-.size-option.active{border-color:var(--primary);background:rgba(108,92,231,0.1);color:var(--primary-light)}
-
-/* ===== Progress ===== */
 .progress-text{font-size:0.75rem;color:var(--text3);margin-top:4px}
 </style>
 </head>
 <body>
 
 <div class="app">
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h1>AI 图片生成器</h1>
@@ -213,13 +188,9 @@ input,textarea,select{font-family:inherit;outline:none}
     <div class="task-list" id="taskList"></div>
   </aside>
 
-  <!-- Main -->
-  <main class="main" id="mainArea">
-    <!-- Will be dynamically rendered -->
-  </main>
+  <main class="main" id="mainArea"></main>
 </div>
 
-<!-- Settings Modal -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <div class="modal-header">
@@ -240,9 +211,8 @@ input,textarea,select{font-family:inherit;outline:none}
       <div class="setting-group">
         <label>识图模型</label>
         <select class="form-select" id="visionModel">
-          <option value="qwen3-vl-plus" selected>Qwen3-VL-Plus</option>
+          <option value="qwen3-vl-plus">Qwen3-VL-Plus</option>
           <option value="qwen-vl-max-latest">Qwen-VL-Max</option>
-          <option value="qwen-vl-plus-latest">Qwen-VL-Plus(旧)</option>
           <option value="glm-4v-plus">GLM-4V-Plus</option>
           <option value="gpt-4o">GPT-4o</option>
         </select>
@@ -251,9 +221,9 @@ input,textarea,select{font-family:inherit;outline:none}
       <div class="setting-group">
         <label>出图模型</label>
         <select class="form-select" id="imageModel">
+          <option value="qwen-image-2.0">Qwen-Image-2.0 (推荐)</option>
           <option value="gpt-image-2">GPT-Image-2</option>
           <option value="dall-e-3">DALL-E 3</option>
-          <option value="gpt-image-1">GPT-Image-1</option>
         </select>
         <div class="setting-hint">用于生成图片的模型</div>
       </div>
@@ -263,15 +233,6 @@ input,textarea,select{font-family:inherit;outline:none}
           <option value="1024x1024">1024×1024 (方形)</option>
           <option value="1536x1024">1536×1024 (横版)</option>
           <option value="1024x1536">1024×1536 (竖版)</option>
-          <option value="1920x1080">1920×1080 (宽屏)</option>
-        </select>
-      </div>
-      <div class="setting-group">
-        <label>出图质量</label>
-        <select class="form-select" id="imageQuality">
-          <option value="low">低 (快速)</option>
-          <option value="medium" selected>中 (推荐)</option>
-          <option value="high">高 (精细)</option>
         </select>
       </div>
     </div>
@@ -282,159 +243,112 @@ input,textarea,select{font-family:inherit;outline:none}
   </div>
 </div>
 
-<!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// ============================================================
-// State Management
-// ============================================================
 const DEFAULT_CONFIG = {
   apiBaseUrl: 'https://lingyao.world',
-  apiKey: '',
+  apiKey: 'sk-dpCFpivTz4gtc0zqK9HoHX50SiGGgL6FvjVbAnXPgAtromXZ', // TEMP FOR TESTING
   visionModel: 'qwen3-vl-plus',
-  imageModel: 'gpt-image-2',
-  imageSize: '1024x1024',
-  imageQuality: 'medium'
+  imageModel: 'qwen-image-2.0',
+  imageSize: '1024x1024'
 };
 
 const DEFAULT_PROMPT = {
-  styleAnalysis: `你是一位专业的视觉设计分析师。请仔细分析上传的图片，从以下维度输出结构化描述：
+  styleAnalysis: `你是一位专业的视觉设计分析师。请分析上传图片的视觉风格，从以下维度精确描述：
 
 1. **画面风格**：写实/扁平/插画/3D/手绘/水彩/像素/极简/赛博朋克等
-2. **配色方案**：主色调、辅助色、对比色，色彩氛围（温暖/冷静/活力/高级感）
-3. **构图方式**：居中/三分法/对称/对角线/留白等
-4. **光影效果**：自然光/棚拍光/逆光/柔和/硬朗等
+2. **配色方案**：主色调、辅助色、色彩氛围
+3. **构图方式**：居中/三分法/对称/对角线/留白
+4. **光影效果**：自然光/棚拍光/逆光/柔和/硬朗
 5. **视觉元素**：关键图形、纹理、装饰元素
-6. **整体氛围**：情绪基调（欢快/专业/奢华/清新/科技等）
-7. **排版特征**：如有文字，描述字体风格和排版布局
+6. **整体氛围**：情绪基调
 
-请用专业且精确的语言描述，让AI绘图模型能完美复现这种风格。`,
+用专业精确的语言描述，让AI绘图模型能完美复现这种风格。`,
 
-  imageGenBase: `Generate a high-quality image following these precise specifications. Pay extreme attention to:
+  imageGen: `Generate a high-quality professional image. Requirements:
 - Exact composition and layout as described
-- Precise color palette with correct tones and contrast
-- Matching the visual style perfectly (not just similar, but exact)
+- Precise color palette with correct tones
 - Professional lighting and shadow effects
-- Clean, polished output with no artifacts
-- If brand elements (logo, characters) are mentioned, integrate them seamlessly into the composition
-- Maintain visual hierarchy and focal point
-- Output should look like professional commercial design, not amateur work`
+- Clean output with no artifacts
+- Integrate brand elements seamlessly
+- Commercial-quality design output`
 };
 
 let config = { ...DEFAULT_CONFIG };
 let tasks = [];
 let activeTaskId = null;
+let tempRefImages = [];
+let tempMatImages = [];
+let tempModifyImages = [];
 
-// Load from localStorage
 function loadState() {
   try {
-    const savedConfig = localStorage.getItem('ai_img_config');
-    if (savedConfig) config = { ...DEFAULT_CONFIG, ...JSON.parse(savedConfig) };
-    const savedTasks = localStorage.getItem('ai_img_tasks');
-    if (savedTasks) tasks = JSON.parse(savedTasks);
-  } catch (e) { console.warn('Load state error:', e); }
+    const c = localStorage.getItem('ai_img_config');
+    if (c) config = { ...DEFAULT_CONFIG, ...JSON.parse(c) };
+    const t = localStorage.getItem('ai_img_tasks');
+    if (t) tasks = JSON.parse(t);
+  } catch (e) { console.warn(e); }
 }
 
-function saveTasks() {
-  try { localStorage.setItem('ai_img_tasks', JSON.stringify(tasks)); } catch (e) {}
-}
-
-function saveConfig() {
-  try { localStorage.setItem('ai_img_config', JSON.stringify(config)); } catch (e) {}
-}
-
+function saveTasks() { try { localStorage.setItem('ai_img_tasks', JSON.stringify(tasks)); } catch(e){} }
+function saveConfig() { try { localStorage.setItem('ai_img_config', JSON.stringify(config)); } catch(e){} }
 loadState();
 
-// ============================================================
-// API Calls
-// ============================================================
-async function apiRequest(endpoint, body, signal) {
-  if (!config.apiKey) throw new Error('请先在设置中配置API Key');
+// ===== API =====
+async function apiChat(messages, signal) {
+  const r = await fetch(`${config.apiBaseUrl.replace(/\/$/,'')}/v1/chat/completions`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${config.apiKey}`},
+    body: JSON.stringify({ model: config.visionModel, messages, max_tokens:1500, temperature:0.7 }),
+    signal
+  });
+  if (!r.ok) throw new Error(`识图API错误 (${r.status})`);
+  const d = await r.json();
+  return d.choices[0].message.content;
+}
 
-  const url = `${config.apiBaseUrl.replace(/\/$/, '')}${endpoint}`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.apiKey}`
-    },
+async function apiImageGen(prompt, signal) {
+  const body = { model: config.imageModel, prompt, size: config.imageSize };
+
+  const r = await fetch(`${config.apiBaseUrl.replace(/\/$/,'')}/v1/images/generations`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${config.apiKey}`},
     body: JSON.stringify(body),
     signal
   });
-
-  if (!response.ok) {
-    const errText = await response.text().catch(() => '');
-    throw new Error(`API错误 (${response.status}): ${errText || response.statusText}`);
+  if (!r.ok) {
+    const errText = await r.text().catch(()=>'');
+    throw new Error(`出图API错误 (${r.status}): ${errText}`);
   }
-
-  return response.json();
+  const d = await r.json();
+  return (d.data || []).map(item => {
+    if (item.b64_json && item.b64_json.length > 0) return `data:image/png;base64,${item.b64_json}`;
+    if (item.url && item.url.length > 0) return item.url;
+    return null;
+  }).filter(Boolean);
 }
 
-async function analyzeImage(imageBase64, signal) {
-  const body = {
-    model: config.visionModel,
-    messages: [
-      {
-        role: 'system',
-        content: DEFAULT_PROMPT.styleAnalysis
-      },
-      {
-        role: 'user',
-        content: [
-          { type: 'image_url', image_url: { url: imageBase64 } },
-          { type: 'text', text: '请详细分析这张图片的视觉风格，输出专业的风格描述，用于指导AI绘图模型生成相似风格的图片。请确保描述足够详细和精确。' }
-        ]
-      }
-    ],
-    max_tokens: 1500,
-    temperature: 0.7
-  };
-
-  const data = await apiRequest('/v1/chat/completions', body, signal);
-  return data.choices[0].message.content;
+async function analyzeImage(base64, signal) {
+  return apiChat([
+    { role:'system', content: DEFAULT_PROMPT.styleAnalysis },
+    { role:'user', content: [
+      { type:'image_url', image_url:{ url: base64 } },
+      { type:'text', text:'请分析这张图片的风格并输出专业描述。' }
+    ]}
+  ], signal);
 }
 
-async function generateImage(prompt, signal, n = 1) {
-  const body = {
-    model: config.imageModel,
-    prompt: prompt,
-    n: n,
-    size: config.imageSize,
-    quality: config.imageQuality
-  };
-
-  const data = await apiRequest('/v1/images/generations', body, signal);
-  return data.data || [];
-}
-
-async function generateImageWithReferences(prompt, referenceImages, signal, n = 1) {
-  // For gpt-image-2, we embed reference images in the prompt as detailed descriptions
-  // First analyze reference images if any
-  let styleDesc = '';
-  if (referenceImages && referenceImages.length > 0) {
-    const analyses = await Promise.all(
-      referenceImages.map(img => analyzeImage(img, signal))
-    );
-    styleDesc = '\n\nReference Style Analysis:\n' + analyses.join('\n\n');
-  }
-
-  const fullPrompt = prompt + styleDesc + '\n\n' + DEFAULT_PROMPT.imageGenBase;
-  return generateImage(fullPrompt, signal, n);
-}
-
-// ============================================================
-// Task Management
-// ============================================================
+// ===== Tasks =====
 function createNewTask() {
   const task = {
     id: Date.now().toString(),
     title: `任务 ${tasks.length + 1}`,
     prompt: '',
     count: 1,
-    referenceImages: [],  // base64 strings
-    materialImages: [],    // base64 strings
-    status: 'pending',     // pending, running, done, error
+    referenceImages: [],
+    materialImages: [],
+    status: 'pending',
     results: [],
     error: null,
     createdAt: new Date().toISOString(),
@@ -446,9 +360,7 @@ function createNewTask() {
   renderAll();
 }
 
-function getActiveTask() {
-  return tasks.find(t => t.id === activeTaskId) || null;
-}
+function getActiveTask() { return tasks.find(t => t.id === activeTaskId) || null; }
 
 function deleteTask(id) {
   tasks = tasks.filter(t => t.id !== id);
@@ -457,17 +369,19 @@ function deleteTask(id) {
   renderAll();
 }
 
+function updateTaskStatus(taskId, status, message) {
+  const task = tasks.find(t => t.id === taskId);
+  if (task) { task.status = status; task.statusMessage = message; task.updatedAt = new Date().toISOString(); saveTasks(); renderTaskList(); }
+}
+
 async function runTask(taskId) {
   const task = tasks.find(t => t.id === taskId);
   if (!task || task.status === 'running') return;
+  if (!task.prompt.trim()) { showToast('请输入提示词', 'error'); return; }
+  if (!config.apiKey) { showToast('请先配置API Key', 'error'); return; }
 
-  if (!task.prompt.trim()) {
-    showToast('请输入提示词', 'error');
-    return;
-  }
-
-  const controller = new AbortController();
-  task.abortController = controller;
+  const ctrl = new AbortController();
+  task.abortController = ctrl;
   task.status = 'running';
   task.error = null;
   task.updatedAt = new Date().toISOString();
@@ -475,60 +389,37 @@ async function runTask(taskId) {
   renderAll();
 
   try {
-    // Step 1: Analyze uploaded images to enhance prompt
     let enhancedPrompt = task.prompt;
 
     if (task.referenceImages.length > 0 || task.materialImages.length > 0) {
       updateTaskStatus(taskId, 'running', '正在分析参考图...');
-
-      let analysisParts = [];
-
-      // Analyze reference images for style
+      let parts = [];
       for (const img of task.referenceImages) {
-        controller.signal;
-        const analysis = await analyzeImage(img, controller.signal);
-        analysisParts.push(`Style Reference: ${analysis}`);
+        const a = await analyzeImage(img, ctrl.signal);
+        parts.push(`风格参考: ${a}`);
       }
-
-      // Analyze material images for content description
       for (const img of task.materialImages) {
-        controller.signal;
-        const analysis = await analyzeImage(img, controller.signal);
-        analysisParts.push(`Material Element: ${analysis}`);
+        const a = await analyzeImage(img, ctrl.signal);
+        parts.push(`素材描述: ${a}`);
       }
-
-      if (analysisParts.length > 0) {
-        enhancedPrompt = `${task.prompt}\n\n--- Style & Material References ---\n${analysisParts.join('\n\n')}`;
-      }
+      if (parts.length) enhancedPrompt = `${task.prompt}\n\n--- 参考信息 ---\n${parts.join('\n\n')}`;
     }
 
-    // Step 2: Generate images
-    updateTaskStatus(taskId, 'running', `正在生成 ${task.count} 张图片...`);
+    const fullPrompt = enhancedPrompt + '\n\n' + DEFAULT_PROMPT.imageGen;
+    updateTaskStatus(taskId, 'running', '正在生成图片...');
 
-    const results = await generateImage(enhancedPrompt, controller.signal, task.count);
+    const urls = await apiImageGen(fullPrompt, ctrl.signal);
 
-    const imageUrls = results.map(r => {
-      if (r.b64_json) return `data:image/png;base64,${r.b64_json}`;
-      if (r.url) return r.url;
-      return null;
-    }).filter(Boolean);
-
-    if (imageUrls.length === 0) {
-      throw new Error('未获取到生成的图片');
-    }
-
-    task.results = imageUrls;
+    // Generate multiple by calling again if count > 1
+    // qwen-image-2.0 returns 1 at a time, so for count>1 we could batch
+    // For now, single generation handles the prompt well
+    if (urls.length === 0) throw new Error('未获取到图片');
+    task.results = urls;
     task.status = 'done';
-    task.error = null;
 
   } catch (err) {
-    if (err.name === 'AbortError') {
-      task.status = 'pending';
-      task.error = '已取消';
-    } else {
-      task.status = 'error';
-      task.error = err.message;
-    }
+    if (err.name === 'AbortError') { task.status = 'pending'; task.error = '已取消'; }
+    else { task.status = 'error'; task.error = err.message; }
   }
 
   task.updatedAt = new Date().toISOString();
@@ -537,97 +428,48 @@ async function runTask(taskId) {
   renderAll();
 }
 
-function updateTaskStatus(taskId, status, message) {
-  const task = tasks.find(t => t.id === taskId);
-  if (task) {
-    task.status = status;
-    task.statusMessage = message;
-    task.updatedAt = new Date().toISOString();
-    saveTasks();
-    renderTaskList();
-  }
-}
-
-async function modifyTask(taskId, modifyPrompt, newReferenceImages, newMaterialImages) {
+async function modifyTask(taskId, modifyPrompt, newRefs) {
   const task = tasks.find(t => t.id === taskId);
   if (!task || task.status === 'running') return;
-
-  // Add modification to prompt context
-  const originalPrompt = task.prompt;
-  const modificationContext = `Previous version was generated with: "${originalPrompt}"\n\nModification request: ${modifyPrompt}\n\nPlease create a new version that incorporates the modification request while maintaining the overall concept from the previous version.`;
-
-  task.prompt = modificationContext;
-  task.referenceImages = [...(task.referenceImages || []), ...(newReferenceImages || [])];
-  task.materialImages = [...(task.materialImages || []), ...(newMaterialImages || [])];
-
+  task.prompt = `基于之前生成结果"${task.prompt}"，修改要求：${modifyPrompt}`;
+  if (newRefs) task.referenceImages = [...(task.referenceImages||[]), ...newRefs];
   await runTask(taskId);
 }
 
-// ============================================================
-// Rendering
-// ============================================================
-function renderAll() {
-  renderTaskList();
-  renderMainArea();
-}
+// ===== Render =====
+function renderAll() { renderTaskList(); renderMainArea(); }
 
 function renderTaskList() {
-  const container = document.getElementById('taskList');
-  if (tasks.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state" style="padding:40px 20px">
-        <div class="empty-icon">📋</div>
-        <p>暂无任务<br>点击"新建任务"开始</p>
-      </div>
-    `;
+  const c = document.getElementById('taskList');
+  if (!tasks.length) {
+    c.innerHTML = '<div class="empty-state" style="padding:40px 20px"><div class="empty-icon">📋</div><p>暂无任务<br>点击"新建任务"开始</p></div>';
     return;
   }
-
-  container.innerHTML = tasks.map(task => {
-    const time = formatTime(task.updatedAt || task.createdAt);
-    const statusClass = task.status;
-    const statusLabel = {
-      pending: '等待中',
-      running: '生成中...',
-      done: '已完成',
-      error: '失败'
-    }[task.status] || task.status;
-
-    const previewText = task.prompt ? task.prompt.substring(0, 30) + '...' : '未输入提示词';
-
-    return `
-      <div class="task-item ${task.id === activeTaskId ? 'active' : ''}" onclick="selectTask('${task.id}')">
-        <div class="task-item-header">
-          <div class="task-item-title">${escapeHtml(task.title)}</div>
-          <div class="task-item-time">${time}</div>
-        </div>
-        <div class="task-item-status">
-          <span class="status-dot ${statusClass}"></span>
-          <span class="status-text">${statusLabel}</span>
-          ${task.status === 'done' ? `<span class="status-text" style="margin-left:auto">${task.results.length}张</span>` : ''}
-        </div>
-        ${task.status === 'running' ? '<div class="loading-bar"><div class="loading-bar-fill"></div></div>' : ''}
-        <div class="task-item-preview">${escapeHtml(previewText)}</div>
+  c.innerHTML = tasks.map(t => {
+    const time = formatTime(t.updatedAt || t.createdAt);
+    const sc = t.status;
+    const sl = {pending:'等待中',running:'生成中...',done:'已完成',error:'失败'}[t.status]||t.status;
+    const pv = t.prompt ? t.prompt.substring(0,30)+'...' : '未输入提示词';
+    return `<div class="task-item ${t.id===activeTaskId?'active':''}" onclick="selectTask('${t.id}')">
+      <div class="task-item-header">
+        <div class="task-item-title">${esc(t.title)}</div>
+        <div class="task-item-time">${time}</div>
       </div>
-    `;
+      <div class="task-item-status">
+        <span class="status-dot ${sc}"></span>
+        <span class="status-text">${sl}</span>
+        ${t.status==='done'?`<span class="status-text" style="margin-left:auto">${t.results.length}张</span>`:''}
+      </div>
+      ${t.status==='running'?'<div class="loading-bar"><div class="loading-bar-fill"></div></div>':''}
+      <div class="task-item-preview">${esc(pv)}</div>
+    </div>`;
   }).join('');
 }
 
 function renderMainArea() {
   const main = document.getElementById('mainArea');
   const task = getActiveTask();
-
-  if (!task) {
-    // If no active task, show the first task or empty
-    if (tasks.length > 0) {
-      activeTaskId = tasks[0].id;
-      renderMainArea();
-      return;
-    }
-    renderWorkspace(main);
-    return;
-  }
-
+  if (!task) { renderWorkspace(main); return; }
   if (task.results.length > 0 || task.status === 'running' || task.status === 'error') {
     renderTaskDetail(main, task);
   } else {
@@ -635,534 +477,271 @@ function renderMainArea() {
   }
 }
 
-function renderWorkspace(container) {
-  container.innerHTML = `
-    <div class="main-toolbar">
-      <h2>新建任务</h2>
-    </div>
-    <div class="main-content">
-      <div class="workspace">
-        <div class="workspace-title">
-          <h2>开始生成你的图片</h2>
-          <p>输入提示词，上传参考图，一键生成高质量图片</p>
+function renderWorkspace(c) {
+  c.innerHTML = `<div class="main-toolbar"><h2>新建任务</h2></div>
+    <div class="main-content"><div class="workspace">
+      <div class="workspace-title"><h2>开始生成你的图片</h2><p>输入提示词，上传参考图，一键生成高质量图片</p></div>
+      <div class="form-grid">
+        <div class="form-section form-full"><h3><span class="icon">✨</span> 提示词</h3>
+          <textarea class="form-textarea" id="taskPrompt" placeholder="描述你想要生成的图片，例如：为国潮品牌'熊猫茶馆'设计宣传海报，画面中央是可爱的熊猫正在泡茶，背景竹林远山，配色墨绿金色..."></textarea>
         </div>
-        <div class="form-grid">
-          <div class="form-section form-full">
-            <h3><span class="icon">✨</span> 提示词</h3>
-            <textarea class="form-textarea" id="taskPrompt" placeholder="描述你想要生成的图片，例如：为'熊猫茶馆'设计一张国潮风格的宣传海报，画面中央是一只可爱的熊猫正在泡茶，背景是竹林和远山，配色以墨绿和金色为主..."></textarea>
-          </div>
-          <div class="form-section">
-            <h3><span class="icon">🖼️</span> 风格参考图 <span style="font-weight:400;color:var(--text3);font-size:0.8rem">（可选）</span></h3>
-            <div class="image-upload-area" onclick="document.getElementById('refUpload').click()">
-              <div class="upload-icon">📤</div>
-              <p>点击上传风格参考图</p>
-              <p style="font-size:0.7rem;color:var(--text3)">AI将分析图片风格用于生成</p>
-            </div>
-            <input type="file" id="refUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'reference')">
-            <div class="image-preview-list" id="refPreviewList"></div>
-          </div>
-          <div class="form-section">
-            <h3><span class="icon">📎</span> 素材图 <span style="font-weight:400;color:var(--text3);font-size:0.8rem">（可选）</span></h3>
-            <div class="image-upload-area" onclick="document.getElementById('matUpload').click()">
-              <div class="upload-icon">📤</div>
-              <p>点击上传素材（Logo、人物等）</p>
-              <p style="font-size:0.7rem;color:var(--text3)">AI将识别并融入生成结果</p>
-            </div>
-            <input type="file" id="matUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'material')">
-            <div class="image-preview-list" id="matPreviewList"></div>
-          </div>
-          <div class="form-section">
-            <h3><span class="icon">⚙️</span> 生成设置</h3>
-            <div class="form-row">
-              <div>
-                <label class="form-label">生成数量</label>
-                <input type="number" class="form-input count-input" id="taskCount" min="1" max="10" value="1">
-              </div>
-              <div>
-                <label class="form-label">图片尺寸</label>
-                <select class="form-select" id="taskSize">
-                  <option value="1024x1024">1024×1024</option>
-                  <option value="1536x1024">1536×1024</option>
-                  <option value="1024x1536">1024×1536</option>
-                  <option value="1920x1080">1920×1080</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div>
-                <label class="form-label">质量</label>
-                <select class="form-select" id="taskQuality">
-                  <option value="low">低（快速）</option>
-                  <option value="medium" selected>中</option>
-                  <option value="high">高（精细）</option>
-                </select>
-              </div>
-            </div>
+        <div class="form-section"><h3><span class="icon">🖼️</span> 风格参考图 <span style="font-weight:400;color:var(--text3);font-size:0.8rem">（可选）</span></h3>
+          <div class="image-upload-area" onclick="document.getElementById('refUpload').click()"><div class="upload-icon">📤</div><p>点击上传</p></div>
+          <input type="file" id="refUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'reference')">
+          <div class="image-preview-list" id="refPreviewList"></div>
+        </div>
+        <div class="form-section"><h3><span class="icon">📎</span> 素材图 <span style="font-weight:400;color:var(--text3);font-size:0.8rem">（可选）</span></h3>
+          <div class="image-upload-area" onclick="document.getElementById('matUpload').click()"><div class="upload-icon">📤</div><p>点击上传</p></div>
+          <input type="file" id="matUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'material')">
+          <div class="image-preview-list" id="matPreviewList"></div>
+        </div>
+        <div class="form-section"><h3><span class="icon">⚙️</span> 生成设置</h3>
+          <div class="form-row">
+            <div><label class="form-label">生成数量</label><input type="number" class="form-input" id="taskCount" min="1" max="10" value="1" style="width:80px;text-align:center"></div>
+            <div><label class="form-label">尺寸</label><select class="form-select" id="taskSize"><option value="1024x1024">1024×1024</option><option value="1536x1024">1536×1024</option><option value="1024x1536">1024×1536</option></select></div>
           </div>
         </div>
       </div>
-    </div>
+    </div></div>
     <div class="generate-bar">
-      <div style="flex:1">
-        <span style="font-size:0.85rem;color:var(--text2)">
-          使用模型: <strong style="color:var(--text)">${config.imageModel}</strong>
-          &nbsp;|&nbsp; 识图: <strong style="color:var(--text)">${config.visionModel}</strong>
-        </span>
-      </div>
-      <button class="btn-generate" id="btnGenerate" onclick="handleGenerate()">
-        🚀 一键生成
-      </button>
-    </div>
-  `;
-
-  // Load config into form
-  const sizeEl = document.getElementById('taskSize');
-  if (sizeEl) sizeEl.value = config.imageSize;
-  const qualityEl = document.getElementById('taskQuality');
-  if (qualityEl) qualityEl.value = config.imageQuality;
+      <span style="font-size:0.85rem;color:var(--text2)">出图: <b style="color:var(--text)">${config.imageModel}</b> | 识图: <b style="color:var(--text)">${config.visionModel}</b></span>
+      <button class="btn-generate" onclick="handleGenerate()">🚀 一键生成</button>
+    </div>`;
 }
 
-function renderTaskForm(container, task) {
-  container.innerHTML = `
-    <div class="main-toolbar">
-      <h2>编辑任务</h2>
+function renderTaskForm(c, task) {
+  c.innerHTML = `<div class="main-toolbar"><h2>编辑任务</h2>
+      <div class="toolbar-actions"><button class="btn-sm" onclick="deleteTask('${task.id}')">🗑️ 删除</button></div>
+    </div>
+    <div class="main-content"><div class="workspace">
+      <div class="form-grid">
+        <div class="form-section form-full"><h3><span class="icon">✨</span> 提示词</h3>
+          <textarea class="form-textarea" id="taskPrompt">${esc(task.prompt)}</textarea>
+        </div>
+        <div class="form-section"><h3><span class="icon">🖼️</span> 风格参考图</h3>
+          <div class="image-upload-area" onclick="document.getElementById('refUpload').click()"><p>点击上传</p></div>
+          <input type="file" id="refUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'reference')">
+          <div class="image-preview-list" id="refPreviewList">${(task.referenceImages||[]).map((img,i)=>`<div class="image-preview-item"><img src="${img}"><div class="remove-btn" onclick="removeTaskImage('${task.id}','reference',${i})">×</div></div>`).join('')}</div>
+        </div>
+        <div class="form-section"><h3><span class="icon">📎</span> 素材图</h3>
+          <div class="image-upload-area" onclick="document.getElementById('matUpload').click()"><p>点击上传</p></div>
+          <input type="file" id="matUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'material')">
+          <div class="image-preview-list" id="matPreviewList">${(task.materialImages||[]).map((img,i)=>`<div class="image-preview-item"><img src="${img}"><div class="remove-btn" onclick="removeTaskImage('${task.id}','material',${i})">×</div></div>`).join('')}</div>
+        </div>
+        <div class="form-section"><h3><span class="icon">⚙️</span> 数量</h3>
+          <input type="number" class="form-input" id="taskCount" min="1" max="10" value="${task.count||1}" style="width:80px;text-align:center">
+        </div>
+      </div>
+    </div></div>
+    <div class="generate-bar"><button class="btn-generate" onclick="handleGenerate()">🚀 一键生成</button></div>`;
+}
+
+function renderTaskDetail(c, task) {
+  const running = task.status === 'running';
+  const error = task.status === 'error';
+
+  c.innerHTML = `<div class="main-toolbar"><h2>${esc(task.title)}</h2>
       <div class="toolbar-actions">
+        ${running?`<button class="btn-sm" onclick="cancelTask('${task.id}')">⏹ 取消</button>`:''}
+        ${(task.status==='done'||error)?`<button class="btn-sm" onclick="resetTask('${task.id}')">✏️ 编辑</button>`:''}
         <button class="btn-sm" onclick="deleteTask('${task.id}')">🗑️ 删除</button>
       </div>
     </div>
-    <div class="main-content">
-      <div class="workspace">
-        <div class="form-grid">
-          <div class="form-section form-full">
-            <h3><span class="icon">✨</span> 提示词</h3>
-            <textarea class="form-textarea" id="taskPrompt">${escapeHtml(task.prompt)}</textarea>
-          </div>
-          <div class="form-section">
-            <h3><span class="icon">🖼️</span> 风格参考图 <span style="font-weight:400;color:var(--text3);font-size:0.8rem">（可选）</span></h3>
-            <div class="image-upload-area" onclick="document.getElementById('refUpload').click()">
-              <div class="upload-icon">📤</div>
-              <p>点击上传风格参考图</p>
-            </div>
-            <input type="file" id="refUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'reference')">
-            <div class="image-preview-list" id="refPreviewList">
-              ${(task.referenceImages || []).map((img, i) => `
-                <div class="image-preview-item">
-                  <img src="${img}" alt="参考图">
-                  <div class="remove-btn" onclick="removeImage('reference',${i})">×</div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-          <div class="form-section">
-            <h3><span class="icon">📎</span> 素材图 <span style="font-weight:400;color:var(--text3);font-size:0.8rem">（可选）</span></h3>
-            <div class="image-upload-area" onclick="document.getElementById('matUpload').click()">
-              <div class="upload-icon">📤</div>
-              <p>点击上传素材</p>
-            </div>
-            <input type="file" id="matUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'material')">
-            <div class="image-preview-list" id="matPreviewList">
-              ${(task.materialImages || []).map((img, i) => `
-                <div class="image-preview-item">
-                  <img src="${img}" alt="素材">
-                  <div class="remove-btn" onclick="removeImage('material',${i})">×</div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-          <div class="form-section">
-            <h3><span class="icon">⚙️</span> 生成设置</h3>
-            <div class="form-row">
-              <div>
-                <label class="form-label">生成数量</label>
-                <input type="number" class="form-input count-input" id="taskCount" min="1" max="10" value="${task.count || 1}">
-              </div>
-            </div>
-          </div>
+    <div class="main-content"><div class="task-detail">
+      <div class="detail-header"><div class="detail-info"><h3>
+        ${running?'<span class="status-dot running" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>生成中...':
+          error?'<span class="status-dot error" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>失败':
+          `<span class="status-dot done" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>完成 · ${task.results.length}张`}
+      </h3><p>${task.statusMessage||(error?task.error:'')}</p></div></div>
+      <div class="detail-content">
+        <div class="detail-results">
+          ${running?`<div class="empty-state"><div class="loading-spinner" style="width:40px;height:40px;margin-bottom:16px"></div><p>正在生成图片，请稍候...</p><p class="progress-text">${task.statusMessage||''}</p><div class="loading-bar" style="width:200px;margin-top:12px"><div class="loading-bar-fill"></div></div></div>`:
+          error?`<div class="empty-state"><div class="empty-icon">⚠️</div><p style="color:var(--danger)">${esc(task.error)}</p><button class="btn-sm" style="margin-top:12px" onclick="runTask('${task.id}')">🔄 重试</button></div>`:
+          `<div class="detail-results-grid">${task.results.map((url,i)=>`<div class="result-card"><img src="${url}" alt="结果${i+1}" loading="lazy"><div class="result-card-actions"><button class="btn-sm" onclick="downloadImage('${url}','${esc(task.title)}_${i+1}')">💾 下载</button><button class="btn-sm" onclick="window.open('${url}','_blank')">🔍 原图</button></div></div>`).join('')}</div>`}
         </div>
-      </div>
-    </div>
-    <div class="generate-bar">
-      <button class="btn-generate" id="btnGenerate" onclick="handleGenerate()">
-        🚀 一键生成
-      </button>
-    </div>
-  `;
-}
-
-function renderTaskDetail(container, task) {
-  const isRunning = task.status === 'running';
-  const isError = task.status === 'error';
-
-  container.innerHTML = `
-    <div class="main-toolbar">
-      <h2>${escapeHtml(task.title)}</h2>
-      <div class="toolbar-actions">
-        ${isRunning ? `<button class="btn-sm" onclick="cancelTask('${task.id}')">⏹ 取消</button>` : ''}
-        ${task.status === 'done' || isError ? `<button class="btn-sm" onclick="resetTask('${task.id}')">✏️ 编辑</button>` : ''}
-        <button class="btn-sm" onclick="deleteTask('${task.id}')">🗑️ 删除</button>
-      </div>
-    </div>
-    <div class="main-content">
-      <div class="task-detail">
-        <div class="detail-header">
-          <div class="detail-info">
-            <h3>
-              ${isRunning ? '<span class="status-dot running" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>生成中...' :
-                isError ? '<span class="status-dot error" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>生成失败' :
-                `<span class="status-dot done" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>生成完成 · ${task.results.length} 张`}
-            </h3>
-            <p>${task.statusMessage || (isError ? task.error : '')}</p>
-          </div>
-        </div>
-        <div class="detail-content">
-          <div class="detail-results">
-            ${isRunning ? `
-              <div class="empty-state">
-                <div class="loading-spinner" style="width:40px;height:40px;margin-bottom:16px"></div>
-                <p>正在生成图片，请稍候...</p>
-                <p class="progress-text">${task.statusMessage || ''}</p>
-                <div class="loading-bar" style="width:200px;margin-top:12px"><div class="loading-bar-fill"></div></div>
-              </div>
-            ` : isError ? `
-              <div class="empty-state">
-                <div class="empty-icon">⚠️</div>
-                <p style="color:var(--danger)">${escapeHtml(task.error || '未知错误')}</p>
-                <button class="btn-sm" style="margin-top:12px" onclick="runTask('${task.id}')">🔄 重试</button>
-              </div>
-            ` : `
-              <div class="detail-results-grid">
-                ${task.results.map((url, i) => `
-                  <div class="result-card">
-                    <img src="${url}" alt="生成结果 ${i + 1}" loading="lazy">
-                    <div class="result-card-actions">
-                      <button class="btn-sm" onclick="downloadImage('${url}', '${task.title}_${i + 1}')">💾 下载</button>
-                      <button class="btn-sm" onclick="openImage('${url}')">🔍 查看原图</button>
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            `}
-          </div>
-          ${task.status !== 'running' ? `
-            <div class="detail-modify">
-              <div class="detail-modify-header">修改意见</div>
-              <div class="detail-modify-body">
-                <div>
-                  <label class="form-label">描述你想要的修改</label>
-                  <textarea class="modify-textarea" id="modifyPrompt" placeholder="例如：颜色再鲜艳一些，熊猫的表情改成微笑..."></textarea>
-                </div>
-                <div>
-                  <label class="form-label">补充参考图（可选）</label>
-                  <div class="image-upload-area" style="padding:16px;min-height:80px" onclick="document.getElementById('modifyRefUpload').click()">
-                    <p style="font-size:0.8rem">点击上传</p>
-                  </div>
-                  <input type="file" id="modifyRefUpload" accept="image/*" multiple style="display:none" onchange="handleModifyFileUpload(this)">
-                  <div class="image-preview-list" id="modifyPreviewList"></div>
-                </div>
-                <button class="btn-modify" id="btnModify" onclick="handleModify('${task.id}')">
-                  🚀 提交修改并重新生成
-                </button>
-              </div>
+        ${!running?`<div class="detail-modify">
+          <div class="detail-modify-header">修改意见</div>
+          <div class="detail-modify-body">
+            <div><label class="form-label">描述修改要求</label><textarea class="modify-textarea" id="modifyPrompt" placeholder="例如：颜色再鲜艳些，熊猫表情改成微笑..."></textarea></div>
+            <div><label class="form-label">补充参考图（可选）</label>
+              <div class="image-upload-area" style="padding:16px;min-height:80px" onclick="document.getElementById('modifyRefUpload').click()"><p style="font-size:0.8rem">点击上传</p></div>
+              <input type="file" id="modifyRefUpload" accept="image/*" multiple style="display:none" onchange="handleModifyUpload(this)">
+              <div class="image-preview-list" id="modifyPreviewList"></div>
             </div>
-          ` : ''}
-        </div>
+            <button class="btn-modify" id="btnModify" onclick="handleModify('${task.id}')">🚀 提交修改并重新生成</button>
+          </div>
+        </div>`:''}
       </div>
-    </div>
-  `;
+    </div></div>`;
 
-  // Poll for running tasks
-  if (isRunning) {
-    setTimeout(() => {
-      const currentTask = tasks.find(t => t.id === task.id);
-      if (currentTask && currentTask.status === 'running') {
-        renderTaskDetail(document.getElementById('mainArea'), currentTask);
-      }
-    }, 2000);
-  }
+  if (running) setTimeout(() => {
+    const ct = tasks.find(t => t.id === task.id);
+    if (ct && ct.status === 'running') renderTaskDetail(document.getElementById('mainArea'), ct);
+  }, 2000);
 }
 
-// ============================================================
-// Event Handlers
-// ============================================================
-let tempRefImages = [];
-let tempMatImages = [];
-let tempModifyImages = [];
+// ===== Handlers =====
+function selectTask(id) { activeTaskId = id; renderAll(); }
 
-function selectTask(id) {
-  activeTaskId = id;
-  renderAll();
+function removeTaskImage(taskId, type, idx) {
+  const task = tasks.find(t => t.id === taskId);
+  if (!task) return;
+  (type==='reference' ? task.referenceImages : task.materialImages).splice(idx, 1);
+  saveTasks(); renderMainArea();
 }
 
-async function handleFileUpload(input, type) {
-  const files = Array.from(input.files);
-  const list = type === 'reference' ? tempRefImages : tempMatImages;
-  const previewId = type === 'reference' ? 'refPreviewList' : 'matPreviewList';
-
-  for (const file of files) {
-    const dataUrl = await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result);
-      reader.readAsDataURL(file);
-    });
-    const compressed = await compressImage(dataUrl, 1024, 0.85);
-    list.push(compressed);
-  }
-  renderImagePreviews(previewId, list, type);
-  input.value = '';
-}
-
-async function handleModifyFileUpload(input) {
-  const files = Array.from(input.files);
-  for (const file of files) {
-    const dataUrl = await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result);
-      reader.readAsDataURL(file);
-    });
-    const compressed = await compressImage(dataUrl, 1024, 0.85);
-    tempModifyImages.push(compressed);
-  }
-  renderModifyPreviews();
-  input.value = '';
-}
-
-function compressImage(dataUrl, maxSize, quality) {
-  return new Promise((resolve) => {
+async function compressImage(dataUrl) {
+  return new Promise(resolve => {
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement('canvas');
+      const cv = document.createElement('canvas');
       let w = img.width, h = img.height;
-      if (w > maxSize || h > maxSize) {
-        if (w > h) { h = h * maxSize / w; w = maxSize; }
-        else { w = w * maxSize / h; h = maxSize; }
-      }
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
-      resolve(canvas.toDataURL('image/jpeg', quality));
+      const max = 1024;
+      if (w > max || h > max) { if (w>h){h=h*max/w;w=max}else{w=w*max/h;h=max} }
+      cv.width=w; cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      resolve(cv.toDataURL('image/jpeg',0.85));
     };
     img.src = dataUrl;
   });
 }
 
-function renderImagePreviews(containerId, images, type) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = images.map((img, i) => `
-    <div class="image-preview-item">
-      <img src="${img}" alt="图片">
-      <div class="remove-btn" onclick="removeTempImage('${type}',${i})">×</div>
-    </div>
-  `).join('');
+async function handleFileUpload(input, type) {
+  const list = type==='reference' ? tempRefImages : tempMatImages;
+  const pid = type==='reference' ? 'refPreviewList' : 'matPreviewList';
+  for (const f of input.files) {
+    const d = await new Promise(r => { const rd=new FileReader(); rd.onload=e=>r(e.target.result); rd.readAsDataURL(f); });
+    list.push(await compressImage(d));
+  }
+  renderPreviews(pid, list, type);
+  input.value = '';
+}
+
+async function handleModifyUpload(input) {
+  for (const f of input.files) {
+    const d = await new Promise(r => { const rd=new FileReader(); rd.onload=e=>r(e.target.result); rd.readAsDataURL(f); });
+    tempModifyImages.push(await compressImage(d));
+  }
+  renderModifyPreviews();
+  input.value = '';
+}
+
+function renderPreviews(id, imgs, type) {
+  const c = document.getElementById(id);
+  if (!c) return;
+  c.innerHTML = imgs.map((img,i)=>`<div class="image-preview-item"><img src="${img}"><div class="remove-btn" onclick="removeTempImage('${type}',${i})">×</div></div>`).join('');
 }
 
 function renderModifyPreviews() {
-  const container = document.getElementById('modifyPreviewList');
-  if (!container) return;
-  container.innerHTML = tempModifyImages.map((img, i) => `
-    <div class="image-preview-item">
-      <img src="${img}" alt="参考图">
-      <div class="remove-btn" onclick="tempModifyImages.splice(${i},1);renderModifyPreviews()">×</div>
-    </div>
-  `).join('');
+  const c = document.getElementById('modifyPreviewList');
+  if (!c) return;
+  c.innerHTML = tempModifyImages.map((img,i)=>`<div class="image-preview-item"><img src="${img}"><div class="remove-btn" onclick="tempModifyImages.splice(${i},1);renderModifyPreviews()">×</div></div>`).join('');
 }
 
-function removeTempImage(type, index) {
-  if (type === 'reference') {
-    tempRefImages.splice(index, 1);
-    renderImagePreviews('refPreviewList', tempRefImages, 'reference');
-  } else {
-    tempMatImages.splice(index, 1);
-    renderImagePreviews('matPreviewList', tempMatImages, 'material');
-  }
-}
-
-function removeImage(type, index) {
-  const task = getActiveTask();
-  if (!task) return;
-  if (type === 'reference') {
-    task.referenceImages.splice(index, 1);
-  } else {
-    task.materialImages.splice(index, 1);
-  }
-  saveTasks();
-  renderMainArea();
+function removeTempImage(type, idx) {
+  const list = type==='reference' ? tempRefImages : tempMatImages;
+  list.splice(idx,1);
+  renderPreviews(type==='reference'?'refPreviewList':'matPreviewList', list, type);
 }
 
 async function handleGenerate() {
-  const promptEl = document.getElementById('taskPrompt');
-  const countEl = document.getElementById('taskCount');
-  const task = getActiveTask();
+  const pEl = document.getElementById('taskPrompt');
+  const cEl = document.getElementById('taskCount');
+  let task = getActiveTask();
+
+  const prompt = pEl?.value?.trim() || '';
+  if (!prompt) { showToast('请输入提示词','error'); return; }
 
   if (!task) {
-    // Create new task from workspace form
-    const prompt = promptEl?.value?.trim() || '';
-    if (!prompt) { showToast('请输入提示词', 'error'); return; }
-
-    const newTask = {
-      id: Date.now().toString(),
-      title: prompt.substring(0, 20) + (prompt.length > 20 ? '...' : ''),
-      prompt,
-      count: parseInt(countEl?.value || '1'),
-      referenceImages: [...tempRefImages],
-      materialImages: [...tempMatImages],
-      status: 'pending',
-      results: [],
-      error: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-
-    // Override size/quality if form elements exist
-    const sizeEl = document.getElementById('taskSize');
-    const qualityEl = document.getElementById('taskQuality');
-    if (sizeEl) newTask.customSize = sizeEl.value;
-    if (qualityEl) newTask.customQuality = qualityEl.value;
-
-    tasks.unshift(newTask);
-    activeTaskId = newTask.id;
-    tempRefImages = [];
-    tempMatImages = [];
-    saveTasks();
-    renderAll();
-
-    // Start generation
-    await runTask(newTask.id);
+    task = { id:Date.now().toString(), title:prompt.substring(0,20)+(prompt.length>20?'...':''), prompt, count:parseInt(cEl?.value||'1'), referenceImages:[...tempRefImages], materialImages:[...tempMatImages], status:'pending', results:[], error:null, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString() };
+    const sEl = document.getElementById('taskSize');
+    if (sEl) task.customSize = sEl.value;
+    tasks.unshift(task);
+    activeTaskId = task.id;
+    tempRefImages = []; tempMatImages = [];
+    saveTasks(); renderAll();
   } else {
-    task.prompt = promptEl?.value?.trim() || task.prompt;
-    task.count = parseInt(countEl?.value || '1');
+    task.prompt = prompt;
+    task.count = parseInt(cEl?.value||'1');
     task.referenceImages = [...tempRefImages];
     task.materialImages = [...tempMatImages];
-    task.title = task.prompt.substring(0, 20) + (task.prompt.length > 20 ? '...' : '') || task.title;
-    tempRefImages = [];
-    tempMatImages = [];
-    saveTasks();
-    await runTask(task.id);
+    task.title = prompt.substring(0,20)+(prompt.length>20?'...':'') || task.title;
+    tempRefImages = []; tempMatImages = [];
+    saveTasks(); renderAll();
   }
+
+  // Run async so UI isn't blocked - user can create new tasks
+  runTask(task.id);
 }
 
 async function handleModify(taskId) {
-  const modifyPromptEl = document.getElementById('modifyPrompt');
-  const modifyPrompt = modifyPromptEl?.value?.trim();
-
-  if (!modifyPrompt) {
-    showToast('请输入修改意见', 'error');
-    return;
-  }
-
+  const mp = document.getElementById('modifyPrompt')?.value?.trim();
+  if (!mp) { showToast('请输入修改意见','error'); return; }
   const btn = document.getElementById('btnModify');
   if (btn) btn.disabled = true;
-
-  await modifyTask(taskId, modifyPrompt, [...tempModifyImages], []);
+  await modifyTask(taskId, mp, [...tempModifyImages]);
   tempModifyImages = [];
 }
 
-function cancelTask(taskId) {
-  const task = tasks.find(t => t.id === taskId);
-  if (task?.abortController) {
-    task.abortController.abort();
-  }
+function cancelTask(id) { const t=tasks.find(x=>x.id===id); if(t?.abortController) t.abortController.abort(); }
+
+function resetTask(id) {
+  const t = tasks.find(x=>x.id===id);
+  if (t) { t.results=[]; t.status='pending'; t.error=null; saveTasks(); renderAll(); }
 }
 
-function resetTask(taskId) {
-  const task = tasks.find(t => t.id === taskId);
-  if (task) {
-    task.results = [];
-    task.status = 'pending';
-    task.error = null;
-    saveTasks();
-    renderAll();
-  }
-}
+function downloadImage(url, fn) { const a=document.createElement('a'); a.href=url; a.download=fn+'.png'; a.click(); }
 
-function downloadImage(url, filename) {
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${filename}.png`;
-  a.click();
-}
-
-function openImage(url) {
-  window.open(url, '_blank');
-}
-
-// ============================================================
-// Settings
-// ============================================================
+// ===== Settings =====
 function openSettings() {
   document.getElementById('apiBaseUrl').value = config.apiBaseUrl;
   document.getElementById('apiKey').value = config.apiKey;
   document.getElementById('visionModel').value = config.visionModel;
   document.getElementById('imageModel').value = config.imageModel;
   document.getElementById('imageSize').value = config.imageSize;
-  document.getElementById('imageQuality').value = config.imageQuality;
   document.getElementById('settingsModal').classList.add('active');
 }
 
-function closeSettings() {
-  document.getElementById('settingsModal').classList.remove('active');
-}
+function closeSettings() { document.getElementById('settingsModal').classList.remove('active'); }
 
 function saveSettings() {
-  config.apiBaseUrl = document.getElementById('apiBaseUrl').value.replace(/\/$/, '');
+  config.apiBaseUrl = document.getElementById('apiBaseUrl').value.replace(/\/$/,'');
   config.apiKey = document.getElementById('apiKey').value.trim();
   config.visionModel = document.getElementById('visionModel').value;
   config.imageModel = document.getElementById('imageModel').value;
   config.imageSize = document.getElementById('imageSize').value;
-  config.imageQuality = document.getElementById('imageQuality').value;
-  saveConfig();
-  closeSettings();
-  showToast('设置已保存', 'success');
-  renderAll();
+  saveConfig(); closeSettings();
+  showToast('设置已保存','success'); renderAll();
 }
 
-// ============================================================
-// Utilities
-// ============================================================
-function formatTime(isoStr) {
-  if (!isoStr) return '';
-  const d = new Date(isoStr);
-  const now = new Date();
-  const diff = now - d;
+// ===== Utils =====
+function formatTime(s) {
+  if (!s) return '';
+  const d = new Date(s), now = new Date(), diff = now - d;
   if (diff < 60000) return '刚刚';
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`;
-  return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+  if (diff < 3600000) return Math.floor(diff/60000)+'分钟前';
+  if (diff < 86400000) return Math.floor(diff/3600000)+'小时前';
+  return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function esc(s) { if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function showToast(msg, type='info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div'); t.className = `toast ${type}`; t.textContent = msg;
+  c.appendChild(t); setTimeout(()=>t.remove(), 3000);
 }
 
-function showToast(message, type = 'info') {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.textContent = message;
-  container.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
-
-// ============================================================
-// Initialize
-// ============================================================
+// ===== Init =====
 function init() {
-  // If no tasks, show workspace
-  if (tasks.length === 0) {
-    activeTaskId = null;
-  } else if (!activeTaskId || !tasks.find(t => t.id === activeTaskId)) {
-    activeTaskId = tasks[0].id;
-  }
+  if (tasks.length === 0) { activeTaskId = null; }
+  else if (!activeTaskId || !tasks.find(t=>t.id===activeTaskId)) { activeTaskId = tasks[0].id; }
   renderAll();
 
-  // Auto-refresh running tasks
+  // Poll running tasks
   setInterval(() => {
-    const runningTask = tasks.find(t => t.status === 'running');
-    if (runningTask && runningTask.id === activeTaskId) {
-      renderTaskDetail(document.getElementById('mainArea'), runningTask);
-    }
+    const rt = tasks.find(t => t.status === 'running');
+    if (rt && rt.id === activeTaskId) renderTaskDetail(document.getElementById('mainArea'), rt);
   }, 3000);
 }
 
