@@ -4,747 +4,637 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI 图片生成器</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--surface3:#22222f;
-  --border:#2a2a3a;--border-hover:#3a3a5a;
-  --text:#e8e8f0;--text2:#a0a0b8;--text3:#6a6a80;
-  --primary:#6c5ce7;--primary-light:#8577ed;--primary-dark:#5a4bd6;
-  --success:#00b894;--warning:#fdcb6e;--danger:#e17055;
-  --radius:12px;--radius-sm:8px;--radius-lg:16px;
-  --shadow:0 4px 24px rgba(0,0,0,0.4);
-  --transition:all 0.2s ease;
+  --bg:#08080c;--surface:#101018;--surface2:#181822;--surface3:#222230;
+  --border:#282838;--border-h:#383850;
+  --text:#eeeef4;--text2:#9898b0;--text3:#585868;
+  --pri:#7c6aef;--pri-l:#9d8fff;--pri-d:#6354d4;
+  --ok:#22c55e;--warn:#f59e0b;--err:#ef4444;
+  --r:10px;--rs:6px;--rl:14px;
+  --shadow:0 4px 24px rgba(0,0,0,.5);
+  --t:all .2s ease;
 }
 html{font-size:14px}
-body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden}
 button{font-family:inherit;cursor:pointer;border:none;outline:none}
 input,textarea,select{font-family:inherit;outline:none}
-::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--border-hover)}
 
-.app{display:grid;grid-template-columns:280px 1fr;height:100vh;gap:0}
+.app{display:grid;grid-template-columns:260px 1fr;height:100vh}
 
-.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.sidebar-header{padding:20px;border-bottom:1px solid var(--border)}
-.sidebar-header h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--primary-light),#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.sidebar-header p{font-size:0.8rem;color:var(--text3);margin-top:4px}
+/* Sidebar */
+.sb{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sb-h{padding:18px 20px;border-bottom:1px solid var(--border)}
+.sb-h h1{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,var(--pri-l),#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sb-h p{font-size:.72rem;color:var(--text3);margin-top:3px}
+.sb-actions{padding:10px 12px;display:flex;gap:8px;border-bottom:1px solid var(--border)}
+.btn-new{flex:1;padding:9px;background:var(--pri);color:#fff;border-radius:var(--rs);font-size:.82rem;font-weight:600;transition:var(--t);display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-new:hover{background:var(--pri-l)}
+.btn-set{padding:9px 11px;background:var(--surface2);color:var(--text2);border-radius:var(--rs);transition:var(--t)}
+.btn-set:hover{background:var(--surface3);color:var(--text)}
+.tl{flex:1;overflow-y:auto;padding:6px}
+.ti{padding:10px 12px;border-radius:var(--rs);cursor:pointer;transition:var(--t);margin-bottom:3px;border:1px solid transparent;position:relative}
+.ti:hover{background:var(--surface2)}
+.ti.act{background:var(--surface2);border-color:var(--pri)}
+.ti-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.ti-title{font-weight:600;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.ti-time{font-size:.65rem;color:var(--text3);flex-shrink:0}
+.ti-st{display:flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot.p{background:var(--text3)}.dot.r{background:var(--warn);animation:pls 1.5s infinite}.dot.d{background:var(--ok)}.dot.e{background:var(--err)}
+@keyframes pls{0%,100%{opacity:1}50%{opacity:.4}}
+.ti-st span{font-size:.7rem;color:var(--text2)}
+.ti-prev{font-size:.7rem;color:var(--text3);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbar{height:2px;background:var(--surface3);border-radius:1px;margin-top:6px;overflow:hidden}
+.lbar i{display:block;height:100%;width:40%;background:linear-gradient(90deg,var(--pri),var(--pri-l));border-radius:1px;animation:lp 1.5s ease infinite}
+@keyframes lp{0%{margin-left:-40%}100%{margin-left:100%}}
+.ti .del{position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:50%;background:rgba(239,68,68,.2);color:var(--err);font-size:.6rem;display:none;align-items:center;justify-content:center}
+.ti:hover .del{display:flex}
 
-.sidebar-actions{padding:12px;display:flex;gap:8px}
-.btn-new-task{flex:1;padding:10px;background:var(--primary);color:#fff;border-radius:var(--radius-sm);font-size:0.85rem;font-weight:600;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px}
-.btn-new-task:hover{background:var(--primary-light);transform:translateY(-1px)}
-.btn-settings{padding:10px 12px;background:var(--surface2);color:var(--text2);border-radius:var(--radius-sm);font-size:1rem;transition:var(--transition)}
-.btn-settings:hover{background:var(--surface3);color:var(--text)}
+/* Main */
+.mn{display:flex;flex-direction:column;overflow:hidden}
+.mn-bar{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.mn-bar h2{font-size:1rem;font-weight:600;flex:1}
+.mn-body{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.ws{flex:1;overflow-y:auto;padding:20px}
+.ws-h{text-align:center;margin-bottom:20px}
+.ws-h h2{font-size:1.4rem;font-weight:700;margin-bottom:6px}
+.ws-h p{color:var(--text2);font-size:.9rem}
 
-.task-list{flex:1;overflow-y:auto;padding:8px}
-.task-item{padding:12px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);margin-bottom:4px;border:1px solid transparent}
-.task-item:hover{background:var(--surface2)}
-.task-item.active{background:var(--surface2);border-color:var(--primary)}
-.task-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.task-item-title{font-weight:600;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
-.task-item-time{font-size:0.7rem;color:var(--text3)}
-.task-item-status{display:flex;align-items:center;gap:6px}
-.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.status-dot.pending{background:var(--text3)}
-.status-dot.running{background:var(--warning);animation:pulse 1.5s infinite}
-.status-dot.done{background:var(--success)}
-.status-dot.error{background:var(--danger)}
-.status-text{font-size:0.75rem;color:var(--text2)}
-.task-item-preview{font-size:0.75rem;color:var(--text3);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:860px;margin:0 auto}
+.fs{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.fs h3{font-size:.92rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.ff{grid-column:1/-1}
 
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.lb{display:block;font-size:.8rem;color:var(--text2);margin-bottom:6px;font-weight:500}
+.ta{width:100%;min-height:110px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:10px;font-size:.85rem;resize:vertical;transition:var(--t)}
+.ta:focus{border-color:var(--pri)}
+.ta::placeholder{color:var(--text3)}
+.fi{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:9px 11px;font-size:.85rem;transition:var(--t)}
+.fi:focus{border-color:var(--pri)}
+.fs2{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:9px 11px;font-size:.85rem;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath fill='%239898b0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
 
-.main{display:flex;flex-direction:column;overflow:hidden}
-.main-toolbar{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.main-toolbar h2{font-size:1.1rem;font-weight:600;flex:1}
-.toolbar-actions{display:flex;gap:8px}
-.main-content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.ua{border:2px dashed var(--border);border-radius:var(--rs);padding:20px;text-align:center;cursor:pointer;transition:var(--t);min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.ua:hover{border-color:var(--pri);background:rgba(124,106,239,.04)}
+.ua .ui{font-size:1.8rem;opacity:.4}
+.ua p{color:var(--text3);font-size:.8rem}
 
-.workspace{display:flex;flex-direction:column;height:100%;padding:20px;overflow-y:auto}
-.workspace-title{text-align:center;margin-bottom:24px}
-.workspace-title h2{font-size:1.5rem;font-weight:700;margin-bottom:8px}
-.workspace-title p{color:var(--text2)}
+.pl{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pi{position:relative;width:70px;height:70px;border-radius:var(--rs);overflow:hidden;border:1px solid var(--border)}
+.pi img{width:100%;height:100%;object-fit:cover}
+.pi .rm{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;font-size:.65rem;display:none;align-items:center;justify-content:center;cursor:pointer}
+.pi:hover .rm{display:flex}
 
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px;margin:0 auto;width:100%}
-.form-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-.form-section h3{font-size:1rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.form-section h3 .icon{font-size:1.2rem}
-.form-full{grid-column:1/-1}
+.fr{display:flex;gap:10px}
+.fr>*{flex:1}
 
-.form-label{display:block;font-size:0.85rem;color:var(--text2);margin-bottom:8px;font-weight:500}
-.form-textarea{width:100%;min-height:120px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);padding:12px;font-size:0.9rem;resize:vertical;transition:var(--transition)}
-.form-textarea:focus{border-color:var(--primary)}
-.form-textarea::placeholder{color:var(--text3)}
-.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);padding:10px 12px;font-size:0.9rem;transition:var(--transition)}
-.form-input:focus{border-color:var(--primary)}
-.form-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);padding:10px 12px;font-size:0.9rem;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a0a0b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.gbar{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--surface);border-top:1px solid var(--border)}
+.btn-gen{padding:11px 28px;background:linear-gradient(135deg,var(--pri),var(--pri-l));color:#fff;border-radius:var(--r);font-size:.95rem;font-weight:600;transition:var(--t);margin-left:auto;display:flex;align-items:center;gap:6px}
+.btn-gen:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,106,239,.4)}
+.btn-gen:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-.image-upload-area{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;cursor:pointer;transition:var(--transition);min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
-.image-upload-area:hover{border-color:var(--primary);background:rgba(108,92,231,0.05)}
-.image-upload-area .upload-icon{font-size:2rem;opacity:0.5}
-.image-upload-area p{color:var(--text3);font-size:0.85rem}
+/* Detail */
+.td{display:flex;flex-direction:column;height:100%}
+.dh{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.dhi{flex:1}
+.dhi h3{font-size:.95rem;font-weight:600}
+.dhi p{font-size:.72rem;color:var(--text3)}
+.dc{flex:1;display:flex;overflow:hidden}
+.dr{flex:1;padding:16px;overflow-y:auto}
+.drg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.rc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:var(--t)}
+.rc:hover{border-color:var(--border-h);transform:translateY(-2px)}
+.rc img{width:100%;display:block;object-fit:contain;background:#0a0a10;max-height:520px}
+.ra{padding:10px;display:flex;gap:6px}
+.bs{padding:5px 10px;background:var(--surface2);color:var(--text2);border-radius:var(--rs);font-size:.75rem;transition:var(--t)}
+.bs:hover{background:var(--surface3);color:var(--text)}
 
-.image-preview-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.image-preview-item{position:relative;width:80px;height:80px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border)}
-.image-preview-item img{width:100%;height:100%;object-fit:cover}
-.image-preview-item .remove-btn{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.7);color:#fff;font-size:0.7rem;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:var(--transition)}
-.image-preview-item:hover .remove-btn{opacity:1}
+.dm{width:340px;border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column}
+.dm-h{padding:14px;border-bottom:1px solid var(--border);font-weight:600;font-size:.9rem}
+.dm-b{flex:1;padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.bm{width:100%;padding:9px;background:var(--pri);color:#fff;border-radius:var(--rs);font-weight:600;font-size:.82rem;transition:var(--t)}
+.bm:hover{background:var(--pri-l)}
+.bm:disabled{opacity:.5;cursor:not-allowed}
 
-.form-row{display:flex;gap:12px;margin-bottom:12px}
-.form-row>*{flex:1}
+/* Modal */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:var(--t)}
+.mo.a{opacity:1;pointer-events:auto}
+.md{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);width:460px;max-height:75vh;overflow-y:auto;box-shadow:var(--shadow);transform:translateY(16px);transition:var(--t)}
+.mo.a .md{transform:translateY(0)}
+.md-h{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.md-h h3{font-size:1rem;font-weight:600}
+.xb{width:30px;height:30px;border-radius:var(--rs);background:var(--surface2);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:var(--t)}
+.xb:hover{background:var(--surface3);color:var(--text)}
+.md-b{padding:18px 20px}
+.sg{margin-bottom:14px}
+.sg label{display:block;font-size:.8rem;color:var(--text2);margin-bottom:5px;font-weight:500}
+.sg input,.sg select{width:100%}
+.sh{font-size:.7rem;color:var(--text3);margin-top:3px}
+.md-f{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:6px}
+.bsv{padding:9px 22px;background:var(--pri);color:#fff;border-radius:var(--rs);font-weight:600;transition:var(--t)}
+.bsv:hover{background:var(--pri-l)}
+.bc{padding:9px 22px;background:var(--surface2);color:var(--text2);border-radius:var(--rs);transition:var(--t)}
+.bc:hover{background:var(--surface3)}
 
-.generate-bar{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--surface);border-top:1px solid var(--border)}
-.btn-generate{padding:12px 32px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border-radius:var(--radius);font-size:1rem;font-weight:600;transition:var(--transition);margin-left:auto;display:flex;align-items:center;gap:8px}
-.btn-generate:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(108,92,231,0.4)}
-.btn-generate:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
+.ld{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--pri);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 
-.task-detail{display:flex;flex-direction:column;height:100%}
-.detail-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.detail-info{flex:1}
-.detail-info h3{font-size:1rem;font-weight:600}
-.detail-info p{font-size:0.8rem;color:var(--text3)}
-.detail-content{flex:1;display:flex;overflow:hidden}
-.detail-results{flex:1;padding:20px;overflow-y:auto}
-.detail-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:var(--transition)}
-.result-card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
-.result-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
-.result-card-actions{padding:12px;display:flex;gap:8px}
-.btn-sm{padding:6px 12px;background:var(--surface2);color:var(--text2);border-radius:var(--radius-sm);font-size:0.8rem;transition:var(--transition)}
-.btn-sm:hover{background:var(--surface3);color:var(--text)}
+.es{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--text3)}
+.es .ei{font-size:2.5rem;margin-bottom:12px;opacity:.3}
 
-.detail-modify{width:360px;border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden}
-.detail-modify-header{padding:16px;border-bottom:1px solid var(--border);font-weight:600}
-.detail-modify-body{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
-.modify-textarea{width:100%;min-height:80px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);padding:10px;font-size:0.85rem;resize:vertical}
-.modify-textarea:focus{border-color:var(--primary)}
-.btn-modify{width:100%;padding:10px;background:var(--primary);color:#fff;border-radius:var(--radius-sm);font-weight:600;font-size:0.85rem;transition:var(--transition)}
-.btn-modify:hover{background:var(--primary-light)}
-.btn-modify:disabled{opacity:0.5;cursor:not-allowed}
+.tc{position:fixed;top:16px;right:16px;z-index:200;display:flex;flex-direction:column;gap:6px}
+.tt{padding:10px 18px;border-radius:var(--rs);font-size:.82rem;animation:si .3s ease}
+.tt.ok{background:var(--ok);color:#fff}.tt.er{background:var(--err);color:#fff}.tt.inf{background:var(--pri);color:#fff}
+@keyframes si{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:var(--transition)}
-.modal-overlay.active{opacity:1;pointer-events:auto}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:480px;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow);transform:translateY(20px);transition:var(--transition)}
-.modal-overlay.active .modal{transform:translateY(0)}
-.modal-header{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-header h3{font-size:1.1rem;font-weight:600}
-.btn-close{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--surface2);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:var(--transition)}
-.btn-close:hover{background:var(--surface3);color:var(--text)}
-.modal-body{padding:20px}
-.setting-group{margin-bottom:16px}
-.setting-group label{display:block;font-size:0.85rem;color:var(--text2);margin-bottom:6px;font-weight:500}
-.setting-group input,.setting-group select{width:100%}
-.setting-hint{font-size:0.75rem;color:var(--text3);margin-top:4px}
-.modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
-.btn-save{padding:10px 24px;background:var(--primary);color:#fff;border-radius:var(--radius-sm);font-weight:600;transition:var(--transition)}
-.btn-save:hover{background:var(--primary-light)}
-.btn-cancel{padding:10px 24px;background:var(--surface2);color:var(--text2);border-radius:var(--radius-sm);font-weight:500;transition:var(--transition)}
-.btn-cancel:hover{background:var(--surface3)}
-
-.loading-spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-bar{height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:8px}
-.loading-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:2px;animation:loading-pulse 1.5s ease infinite}
-@keyframes loading-pulse{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
-
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--text3)}
-.empty-state .empty-icon{font-size:3rem;margin-bottom:16px;opacity:0.3}
-.empty-state p{font-size:0.9rem}
-
-.toast-container{position:fixed;top:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px}
-.toast{padding:12px 20px;border-radius:var(--radius-sm);font-size:0.85rem;animation:slideIn 0.3s ease;max-width:360px}
-.toast.success{background:var(--success);color:#fff}
-.toast.error{background:var(--danger);color:#fff}
-.toast.info{background:var(--primary);color:#fff}
-@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-
-@media(max-width:768px){
-  .app{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .form-grid{grid-template-columns:1fr}
-  .detail-content{flex-direction:column}
-  .detail-modify{width:100%;border-left:none;border-top:1px solid var(--border)}
-}
-
-.progress-text{font-size:0.75rem;color:var(--text3);margin-top:4px}
+@media(max-width:768px){.app{grid-template-columns:1fr}.sb{display:none}.fg{grid-template-columns:1fr}.dc{flex-direction:column}.dm{width:100%;border-left:none;border-top:1px solid var(--border)}}
 </style>
 </head>
 <body>
-
 <div class="app">
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <h1>AI 图片生成器</h1>
-      <p>智能提示词 · 一键出图</p>
-    </div>
-    <div class="sidebar-actions">
-      <button class="btn-new-task" onclick="createNewTask()">+ 新建任务</button>
-      <button class="btn-settings" onclick="openSettings()" title="API设置">⚙️</button>
-    </div>
-    <div class="task-list" id="taskList"></div>
-  </aside>
-
-  <main class="main" id="mainArea"></main>
-</div>
-
-<div class="modal-overlay" id="settingsModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>API 配置</h3>
-      <button class="btn-close" onclick="closeSettings()">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="setting-group">
-        <label>API 地址</label>
-        <input type="text" class="form-input" id="apiBaseUrl" placeholder="https://lingyao.world">
-        <div class="setting-hint">聚合API的基础URL，末尾不要带斜杠</div>
-      </div>
-      <div class="setting-group">
-        <label>API Key</label>
-        <input type="password" class="form-input" id="apiKey" placeholder="sk-xxxxxxxxxxxxxxxx">
-        <div class="setting-hint">你的API密钥，仅保存在本地浏览器中</div>
-      </div>
-      <div class="setting-group">
-        <label>识图模型</label>
-        <select class="form-select" id="visionModel">
-          <option value="qwen3-vl-plus">Qwen3-VL-Plus</option>
-          <option value="qwen-vl-max-latest">Qwen-VL-Max</option>
-          <option value="glm-4v-plus">GLM-4V-Plus</option>
-          <option value="gpt-4o">GPT-4o</option>
-        </select>
-        <div class="setting-hint">用于分析参考图并生成提示词的视觉模型</div>
-      </div>
-      <div class="setting-group">
-        <label>出图模型</label>
-        <select class="form-select" id="imageModel">
-          <option value="qwen-image-2.0">Qwen-Image-2.0 (推荐)</option>
-          <option value="gpt-image-2">GPT-Image-2</option>
-          <option value="dall-e-3">DALL-E 3</option>
-        </select>
-        <div class="setting-hint">用于生成图片的模型</div>
-      </div>
-      <div class="setting-group">
-        <label>图片尺寸</label>
-        <select class="form-select" id="imageSize">
-          <option value="1024x1024">1024×1024 (方形)</option>
-          <option value="1536x1024">1536×1024 (横版)</option>
-          <option value="1024x1536">1024×1536 (竖版)</option>
-        </select>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeSettings()">取消</button>
-      <button class="btn-save" onclick="saveSettings()">保存</button>
-    </div>
+<aside class="sb">
+  <div class="sb-h"><h1>AI 图片生成器</h1><p>gpt-image-2 · 智能出图</p></div>
+  <div class="sb-actions">
+    <button class="btn-new" onclick="newTask()">+ 新建任务</button>
+    <button class="btn-set" onclick="openSet()" title="设置">⚙️</button>
   </div>
+  <div class="tl" id="tl"></div>
+</aside>
+<main class="mn" id="mn"></main>
 </div>
 
-<div class="toast-container" id="toastContainer"></div>
+<div class="mo" id="mo">
+<div class="md">
+  <div class="md-h"><h3>API 配置</h3><button class="xb" onclick="closeSet()">×</button></div>
+  <div class="md-b">
+    <div class="sg"><label>API 地址</label><input class="fi" id="sUrl" placeholder="https://lingyao.world"><div class="sh">聚合API地址，末尾不带斜杠</div></div>
+    <div class="sg"><label>API Key</label><input class="fi" type="password" id="sKey" placeholder="sk-xxx"><div class="sh">仅保存在本地</div></div>
+    <div class="sg"><label>识图模型</label><select class="fs2" id="sVis"><option value="qwen3-vl-plus" selected>Qwen3-VL-Plus</option><option value="qwen-vl-max-latest">Qwen-VL-Max</option><option value="glm-4v-plus">GLM-4V-Plus</option></select></div>
+    <div class="sg"><label>图片比例</label><select class="fs2" id="sRatio"><option value="1:1">1:1 方形</option><option value="3:4">3:4 竖版</option><option value="4:3">4:3 横版</option><option value="9:16">9:16 手机竖屏</option><option value="16:9">16:9 宽屏</option></select></div>
+    <div class="sg"><label>质量</label><select class="fs2" id="sQual"><option value="low">低（快速）</option><option value="medium" selected>中（推荐）</option><option value="high">高（精细）</option></select></div>
+  </div>
+  <div class="md-f"><button class="bc" onclick="closeSet()">取消</button><button class="bsv" onclick="saveSet()">保存</button></div>
+</div>
+</div>
+<div class="tc" id="tc"></div>
 
 <script>
-const DEFAULT_CONFIG = {
+const RATIO_MAP = {'1:1':'1024x1024','3:4':'768x1024','4:3':'1024x768','9:16':'768x1344','16:9':'1344x768'};
+
+const CFG = {
   apiBaseUrl: 'https://lingyao.world',
-  apiKey: 'sk-dpCFpivTz4gtc0zqK9HoHX50SiGGgL6FvjVbAnXPgAtromXZ', // TEMP FOR TESTING
+  apiKey: '',
   visionModel: 'qwen3-vl-plus',
-  imageModel: 'qwen-image-2.0',
-  imageSize: '1024x1024'
+  ratio: '1:1',
+  quality: 'medium'
 };
 
-const DEFAULT_PROMPT = {
-  styleAnalysis: `你是一位专业的视觉设计分析师。请分析上传图片的视觉风格，从以下维度精确描述：
+const PROMPT_STYLE = `分析上传图片的视觉风格，从以下维度精确描述：
+1. 画面风格（写实/扁平/插画/3D/手绘等）
+2. 配色方案（主色调、色彩氛围）
+3. 构图方式（居中/三分法/对称等）
+4. 光影效果（自然光/棚拍/逆光等）
+5. 关键视觉元素
+6. 整体氛围和情绪基调
+用专业精确语言描述，让AI绘图模型能完美复现此风格。`;
 
-1. **画面风格**：写实/扁平/插画/3D/手绘/水彩/像素/极简/赛博朋克等
-2. **配色方案**：主色调、辅助色、色彩氛围
-3. **构图方式**：居中/三分法/对称/对角线/留白
-4. **光影效果**：自然光/棚拍光/逆光/柔和/硬朗
-5. **视觉元素**：关键图形、纹理、装饰元素
-6. **整体氛围**：情绪基调
+const PROMPT_BASE = `\n\nGenerate a professional, high-quality image. Ensure exact composition, precise colors, professional lighting, and clean output suitable for commercial use.`;
 
-用专业精确的语言描述，让AI绘图模型能完美复现这种风格。`,
-
-  imageGen: `Generate a high-quality professional image. Requirements:
-- Exact composition and layout as described
-- Precise color palette with correct tones
-- Professional lighting and shadow effects
-- Clean output with no artifacts
-- Integrate brand elements seamlessly
-- Commercial-quality design output`
-};
-
-let config = { ...DEFAULT_CONFIG };
+let cfg = {...CFG};
 let tasks = [];
-let activeTaskId = null;
-let tempRefImages = [];
-let tempMatImages = [];
-let tempModifyImages = [];
+let activeId = null;
+let tmpRef = [], tmpMat = [], tmpMod = [];
 
-function loadState() {
+function load() {
   try {
-    const c = localStorage.getItem('ai_img_config');
-    if (c) config = { ...DEFAULT_CONFIG, ...JSON.parse(c) };
-    const t = localStorage.getItem('ai_img_tasks');
+    const c = localStorage.getItem('ai_cfg');
+    if (c) cfg = {...CFG, ...JSON.parse(c)};
+    const t = localStorage.getItem('ai_tasks');
     if (t) tasks = JSON.parse(t);
-  } catch (e) { console.warn(e); }
+    // migrate old pixel sizes
+    if (cfg.imageSize && !cfg.ratio) {
+      const m = {'1024x1024':'1:1','1536x1024':'4:3','1024x1536':'3:4','1920x1080':'16:9'};
+      cfg.ratio = m[cfg.imageSize] || '1:1';
+      delete cfg.imageSize;
+    }
+  } catch(e){}
 }
-
-function saveTasks() { try { localStorage.setItem('ai_img_tasks', JSON.stringify(tasks)); } catch(e){} }
-function saveConfig() { try { localStorage.setItem('ai_img_config', JSON.stringify(config)); } catch(e){} }
-loadState();
+function sTasks(){ try{localStorage.setItem('ai_tasks',JSON.stringify(tasks))}catch(e){} }
+function sCfg(){ try{localStorage.setItem('ai_cfg',JSON.stringify(cfg))}catch(e){} }
+load();
 
 // ===== API =====
-async function apiChat(messages, signal) {
-  const r = await fetch(`${config.apiBaseUrl.replace(/\/$/,'')}/v1/chat/completions`, {
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':`Bearer ${config.apiKey}`},
-    body: JSON.stringify({ model: config.visionModel, messages, max_tokens:1500, temperature:0.7 }),
-    signal
+async function apiChat(messages, sig) {
+  const r = await fetch(`${cfg.apiBaseUrl.replace(/\/$/,'')}/v1/chat/completions`, {
+    method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},
+    body: JSON.stringify({model:cfg.visionModel, messages, max_tokens:1200, temperature:0.7}), signal:sig
   });
-  if (!r.ok) throw new Error(`识图API错误 (${r.status})`);
+  if (!r.ok) throw new Error(`识图API失败 (${r.status})`);
   const d = await r.json();
   return d.choices[0].message.content;
 }
 
-async function apiImageGen(prompt, signal) {
-  const body = { model: config.imageModel, prompt, size: config.imageSize };
+async function apiImg(prompt, sig) {
+  const size = RATIO_MAP[cfg.ratio] || '1024x1024';
+  const body = {model:'gpt-image-2', prompt, size, quality:cfg.quality};
 
-  const r = await fetch(`${config.apiBaseUrl.replace(/\/$/,'')}/v1/images/generations`, {
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':`Bearer ${config.apiKey}`},
-    body: JSON.stringify(body),
-    signal
+  const r = await fetch(`${cfg.apiBaseUrl.replace(/\/$/,'')}/v1/images/generations`, {
+    method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},
+    body: JSON.stringify(body), signal:sig
   });
   if (!r.ok) {
-    const errText = await r.text().catch(()=>'');
-    throw new Error(`出图API错误 (${r.status}): ${errText}`);
+    const et = await r.text().catch(()=>'');
+    throw new Error(`出图失败 (${r.status}): ${et}`);
   }
   const d = await r.json();
-  return (d.data || []).map(item => {
-    if (item.b64_json && item.b64_json.length > 0) return `data:image/png;base64,${item.b64_json}`;
-    if (item.url && item.url.length > 0) return item.url;
-    return null;
-  }).filter(Boolean);
+  return (d.data||[]).map(x => x.b64_json ? `data:image/png;base64,${x.b64_json}` : x.url || null).filter(Boolean);
 }
 
-async function analyzeImage(base64, signal) {
+async function analyze(b64, sig) {
   return apiChat([
-    { role:'system', content: DEFAULT_PROMPT.styleAnalysis },
-    { role:'user', content: [
-      { type:'image_url', image_url:{ url: base64 } },
-      { type:'text', text:'请分析这张图片的风格并输出专业描述。' }
-    ]}
-  ], signal);
+    {role:'system', content:PROMPT_STYLE},
+    {role:'user', content:[{type:'image_url',image_url:{url:b64}},{type:'text',text:'请分析此图片的风格特征。'}]}
+  ], sig);
+}
+
+function fullPrompt(task) {
+  let p = task.prompt;
+  const refs = [...(task.referenceImages||[])];
+  return p + PROMPT_BASE;
 }
 
 // ===== Tasks =====
-function createNewTask() {
-  const task = {
-    id: Date.now().toString(),
-    title: `任务 ${tasks.length + 1}`,
-    prompt: '',
-    count: 1,
-    referenceImages: [],
-    materialImages: [],
-    status: 'pending',
-    results: [],
-    error: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
-  tasks.unshift(task);
-  saveTasks();
-  activeTaskId = task.id;
-  renderAll();
+function newTask() {
+  const t = {id:String(Date.now()), title:`任务 ${tasks.length+1}`, prompt:'', count:1, referenceImages:[], materialImages:[], status:'pending', results:[], error:null, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString()};
+  tasks.unshift(t);
+  activeId = t.id;
+  sTasks(); render();
 }
 
-function getActiveTask() { return tasks.find(t => t.id === activeTaskId) || null; }
-
-function deleteTask(id) {
-  tasks = tasks.filter(t => t.id !== id);
-  if (activeTaskId === id) activeTaskId = tasks.length > 0 ? tasks[0].id : null;
-  saveTasks();
-  renderAll();
+function delTask(id) {
+  const t = tasks.find(x=>x.id===id);
+  if (t?.abortController) t.abortController.abort();
+  tasks = tasks.filter(x=>x.id!==id);
+  if (activeId===id) activeId = tasks[0]?.id || null;
+  sTasks(); render();
 }
 
-function updateTaskStatus(taskId, status, message) {
-  const task = tasks.find(t => t.id === taskId);
-  if (task) { task.status = status; task.statusMessage = message; task.updatedAt = new Date().toISOString(); saveTasks(); renderTaskList(); }
-}
+function getActive(){ return tasks.find(t=>t.id===activeId)||null; }
 
-async function runTask(taskId) {
-  const task = tasks.find(t => t.id === taskId);
-  if (!task || task.status === 'running') return;
-  if (!task.prompt.trim()) { showToast('请输入提示词', 'error'); return; }
-  if (!config.apiKey) { showToast('请先配置API Key', 'error'); return; }
+async function runTask(id) {
+  const t = tasks.find(x=>x.id===id);
+  if (!t || t.status==='running') return;
+  if (!t.prompt.trim()) { toast('请输入提示词','er'); return; }
+  if (!cfg.apiKey) { toast('请先配置API Key','er'); return; }
 
   const ctrl = new AbortController();
-  task.abortController = ctrl;
-  task.status = 'running';
-  task.error = null;
-  task.updatedAt = new Date().toISOString();
-  saveTasks();
-  renderAll();
+  t.abortController = ctrl;
+  t.status = 'running';
+  t.error = null;
+  t.updatedAt = new Date().toISOString();
+  sTasks(); renderList(); renderMain();
 
   try {
-    let enhancedPrompt = task.prompt;
+    let p = t.prompt;
 
-    if (task.referenceImages.length > 0 || task.materialImages.length > 0) {
-      updateTaskStatus(taskId, 'running', '正在分析参考图...');
-      let parts = [];
-      for (const img of task.referenceImages) {
-        const a = await analyzeImage(img, ctrl.signal);
-        parts.push(`风格参考: ${a}`);
-      }
-      for (const img of task.materialImages) {
-        const a = await analyzeImage(img, ctrl.signal);
-        parts.push(`素材描述: ${a}`);
-      }
-      if (parts.length) enhancedPrompt = `${task.prompt}\n\n--- 参考信息 ---\n${parts.join('\n\n')}`;
+    // Analyze reference & material images in parallel
+    if (t.referenceImages.length || t.materialImages.length) {
+      setStatus(id, 'running', '分析参考图...');
+      const allImgs = [...t.referenceImages.map(i=>({b64:i,type:'style'})), ...t.materialImages.map(i=>({b64:i,type:'mat'}))];
+      const results = await Promise.all(allImgs.map(img => analyze(img.b64, ctrl.signal)));
+      const parts = results.map((r,i) => {
+        const label = allImgs[i].type === 'style' ? '风格参考' : '素材描述';
+        return `${label}: ${r}`;
+      });
+      p = `${t.prompt}\n\n--- 参考信息 ---\n${parts.join('\n\n')}`;
     }
 
-    const fullPrompt = enhancedPrompt + '\n\n' + DEFAULT_PROMPT.imageGen;
-    updateTaskStatus(taskId, 'running', '正在生成图片...');
+    p += PROMPT_BASE;
+    setStatus(id, 'running', '正在生成图片...');
 
-    const urls = await apiImageGen(fullPrompt, ctrl.signal);
+    // Generate multiple images in parallel for count > 1
+    const count = t.count || 1;
+    const batchSize = Math.min(count, 4); // parallel batch size
+    const allUrls = [];
 
-    // Generate multiple by calling again if count > 1
-    // qwen-image-2.0 returns 1 at a time, so for count>1 we could batch
-    // For now, single generation handles the prompt well
-    if (urls.length === 0) throw new Error('未获取到图片');
-    task.results = urls;
-    task.status = 'done';
+    for (let batch = 0; batch < Math.ceil(count / batchSize); batch++) {
+      const remaining = count - allUrls.length;
+      const thisBatch = Math.min(remaining, batchSize);
 
-  } catch (err) {
-    if (err.name === 'AbortError') { task.status = 'pending'; task.error = '已取消'; }
-    else { task.status = 'error'; task.error = err.message; }
+      if (thisBatch <= 0) break;
+
+      setStatus(id, 'running', `正在生成... (${allUrls.length}/${count})`);
+
+      const batchPromises = Array.from({length: thisBatch}, () => apiImg(p, ctrl.signal));
+      const batchResults = await Promise.all(batchPromises);
+
+      for (const urls of batchResults) {
+        if (urls.length > 0) allUrls.push(urls[0]);
+      }
+    }
+
+    if (!allUrls.length) throw new Error('未获取到图片');
+    t.results = allUrls;
+    t.status = 'done';
+
+  } catch(e) {
+    if (e.name === 'AbortError') { t.status='pending'; t.error='已取消'; }
+    else { t.status='error'; t.error=e.message; }
   }
 
-  task.updatedAt = new Date().toISOString();
-  delete task.abortController;
-  saveTasks();
-  renderAll();
+  t.updatedAt = new Date().toISOString();
+  delete t.abortController;
+  sTasks(); render();
 }
 
-async function modifyTask(taskId, modifyPrompt, newRefs) {
-  const task = tasks.find(t => t.id === taskId);
-  if (!task || task.status === 'running') return;
-  task.prompt = `基于之前生成结果"${task.prompt}"，修改要求：${modifyPrompt}`;
-  if (newRefs) task.referenceImages = [...(task.referenceImages||[]), ...newRefs];
-  await runTask(taskId);
+function setStatus(id, st, msg) {
+  const t = tasks.find(x=>x.id===id);
+  if (t) { t.status=st; t.statusMessage=msg; t.updatedAt=new Date().toISOString(); sTasks(); renderList(); }
+}
+
+async function doModify(id, text, newRefs) {
+  const t = tasks.find(x=>x.id===id);
+  if (!t || t.status==='running') return;
+  t.prompt = `基于之前的结果"${t.prompt}"，修改要求：${text}`;
+  if (newRefs) t.referenceImages = [...(t.referenceImages||[]), ...newRefs];
+  await runTask(id);
 }
 
 // ===== Render =====
-function renderAll() { renderTaskList(); renderMainArea(); }
+function render() { renderList(); renderMain(); }
 
-function renderTaskList() {
-  const c = document.getElementById('taskList');
-  if (!tasks.length) {
-    c.innerHTML = '<div class="empty-state" style="padding:40px 20px"><div class="empty-icon">📋</div><p>暂无任务<br>点击"新建任务"开始</p></div>';
-    return;
-  }
+function renderList() {
+  const c = document.getElementById('tl');
+  if (!tasks.length) { c.innerHTML='<div class="es"><div class="ei">📋</div><p>暂无任务</p></div>'; return; }
   c.innerHTML = tasks.map(t => {
-    const time = formatTime(t.updatedAt || t.createdAt);
-    const sc = t.status;
-    const sl = {pending:'等待中',running:'生成中...',done:'已完成',error:'失败'}[t.status]||t.status;
-    const pv = t.prompt ? t.prompt.substring(0,30)+'...' : '未输入提示词';
-    return `<div class="task-item ${t.id===activeTaskId?'active':''}" onclick="selectTask('${t.id}')">
-      <div class="task-item-header">
-        <div class="task-item-title">${esc(t.title)}</div>
-        <div class="task-item-time">${time}</div>
-      </div>
-      <div class="task-item-status">
-        <span class="status-dot ${sc}"></span>
-        <span class="status-text">${sl}</span>
-        ${t.status==='done'?`<span class="status-text" style="margin-left:auto">${t.results.length}张</span>`:''}
-      </div>
-      ${t.status==='running'?'<div class="loading-bar"><div class="loading-bar-fill"></div></div>':''}
-      <div class="task-item-preview">${esc(pv)}</div>
+    const tm = fmtTime(t.updatedAt||t.createdAt);
+    const sc = {pending:'p',running:'r',done:'d',error:'e'}[t.status]||'p';
+    const sl = {pending:'等待',running:'生成中',done:'完成',error:'失败'}[t.status]||t.status;
+    const pv = t.prompt ? t.prompt.slice(0,28)+'...' : '未输入提示词';
+    return `<div class="ti ${t.id===activeId?'act':''}" onclick="pick('${t.id}')">
+      <div class="ti-top"><div class="ti-title">${esc(t.title)}</div><div class="ti-time">${tm}</div></div>
+      <div class="ti-st"><span class="dot ${sc}"></span><span>${sl}</span>${t.status==='done'?`<span style="margin-left:auto">${t.results.length}张</span>`:''}</div>
+      ${t.status==='running'?'<div class="lbar"><i></i></div>':''}
+      <div class="ti-prev">${esc(pv)}</div>
+      <button class="del" onclick="event.stopPropagation();delTask('${t.id}')" title="删除">×</button>
     </div>`;
   }).join('');
 }
 
-function renderMainArea() {
-  const main = document.getElementById('mainArea');
-  const task = getActiveTask();
-  if (!task) { renderWorkspace(main); return; }
-  if (task.results.length > 0 || task.status === 'running' || task.status === 'error') {
-    renderTaskDetail(main, task);
-  } else {
-    renderTaskForm(main, task);
+function renderMain() {
+  const mn = document.getElementById('mn');
+  const t = getActive();
+  if (!t) { renderWs(mn); return; }
+  if (t.results.length || t.status==='running' || t.status==='error') renderDetail(mn, t);
+  else renderForm(mn, t);
+}
+
+function renderWs(c) {
+  c.innerHTML = `<div class="mn-bar"><h2>新建任务</h2></div><div class="mn-body"><div class="ws">
+    <div class="ws-h"><h2>开始生成</h2><p>输入提示词，一键生成高质量图片</p></div>
+    <div class="fg">
+      <div class="fs ff"><h3>✨ 提示词</h3><textarea class="ta" id="tp" placeholder="描述你想要的图片，例如：为国潮品牌设计海报，熊猫在竹林中泡茶，墨绿金色配色..."></textarea></div>
+      <div class="fs"><h3>🖼️ 风格参考图 <span style="color:var(--text3);font-weight:400;font-size:.75rem">可选</span></h3>
+        <div class="ua" onclick="document.getElementById('ru').click()"><div class="ui">📤</div><p>点击上传</p></div>
+        <input type="file" id="ru" accept="image/*" multiple style="display:none" onchange="onFile(this,'ref')"><div class="pl" id="rp"></div>
+      </div>
+      <div class="fs"><h3>📎 素材图 <span style="color:var(--text3);font-weight:400;font-size:.75rem">可选</span></h3>
+        <div class="ua" onclick="document.getElementById('mu').click()"><div class="ui">📤</div><p>点击上传</p></div>
+        <input type="file" id="mu" accept="image/*" multiple style="display:none" onchange="onFile(this,'mat')"><div class="pl" id="mp"></div>
+      </div>
+      <div class="fs"><h3>⚙️ 设置</h3>
+        <div class="fr">
+          <div><label class="lb">数量</label><input class="fi" type="number" id="tc2" min="1" max="10" value="1" style="width:70px;text-align:center"></div>
+          <div><label class="lb">比例</label><select class="fs2" id="tr"><option value="1:1">1:1</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="9:16">9:16</option><option value="16:9">16:9</option></select></div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+  <div class="gbar"><span style="font-size:.8rem;color:var(--text2)">出图: <b style="color:var(--text)">gpt-image-2</b> | 识图: <b style="color:var(--text)">${cfg.visionModel}</b></span><button class="btn-gen" onclick="doGen()">🚀 一键生成</button></div>`;
+  const re = document.getElementById('tr'); if(re) re.value = cfg.ratio;
+}
+
+function renderForm(c, t) {
+  c.innerHTML = `<div class="mn-bar"><h2>编辑任务</h2><div style="display:flex;gap:6px">
+    <button class="bs" onclick="delTask('${t.id}')">🗑️ 删除</button></div></div>
+  <div class="mn-body"><div class="ws">
+    <div class="fg">
+      <div class="fs ff"><h3>✨ 提示词</h3><textarea class="ta" id="tp">${esc(t.prompt)}</textarea></div>
+      <div class="fs"><h3>🖼️ 风格参考图</h3>
+        <div class="ua" onclick="document.getElementById('ru').click()"><p>点击上传</p></div>
+        <input type="file" id="ru" accept="image/*" multiple style="display:none" onchange="onFile(this,'ref')">
+        <div class="pl">${(t.referenceImages||[]).map((img,i)=>`<div class="pi"><img src="${img}"><div class="rm" onclick="delTI('${t.id}','ref',${i})">×</div></div>`).join('')}</div>
+      </div>
+      <div class="fs"><h3>📎 素材图</h3>
+        <div class="ua" onclick="document.getElementById('mu').click()"><p>点击上传</p></div>
+        <input type="file" id="mu" accept="image/*" multiple style="display:none" onchange="onFile(this,'mat')">
+        <div class="pl">${(t.materialImages||[]).map((img,i)=>`<div class="pi"><img src="${img}"><div class="rm" onclick="delTI('${t.id}','mat',${i})">×</div></div>`).join('')}</div>
+      </div>
+      <div class="fs"><h3>⚙️ 数量</h3><input class="fi" type="number" id="tc2" min="1" max="10" value="${t.count||1}" style="width:70px;text-align:center"></div>
+    </div>
+  </div></div>
+  <div class="gbar"><button class="btn-gen" onclick="doGen()">🚀 一键生成</button></div>`;
+}
+
+function renderDetail(c, t) {
+  const run = t.status==='running';
+  const err = t.status==='error';
+  c.innerHTML = `<div class="mn-bar"><h2>${esc(t.title)}</h2><div style="display:flex;gap:6px">
+    ${run?`<button class="bs" onclick="cancelT('${t.id}')">⏹ 取消</button>`:''}
+    ${!run?`<button class="bs" onclick="resetT('${t.id}')">✏️ 编辑</button>`:''}
+    <button class="bs" onclick="delTask('${t.id}')">🗑️ 删除</button></div></div>
+  <div class="mn-body"><div class="td">
+    <div class="dh"><div class="dhi"><h3>
+      ${run?'<span class="dot r" style="display:inline-block;margin-right:5px"></span>生成中...':
+        err?'<span class="dot e" style="display:inline-block;margin-right:5px"></span>失败':
+        `<span class="dot d" style="display:inline-block;margin-right:5px"></span>完成 · ${t.results.length}张`}
+    </h3><p>${t.statusMessage||(err?t.error:'')}</p></div></div>
+    <div class="dc">
+      <div class="dr">
+        ${run?`<div class="es"><div class="ld" style="margin-bottom:14px"></div><p>生成中，请稍候...</p><p style="font-size:.75rem;margin-top:6px;color:var(--text3)">${t.statusMessage||''}</p></div>`:
+        err?`<div class="es"><div class="ei">⚠️</div><p style="color:var(--err)">${esc(t.error)}</p><button class="bs" style="margin-top:10px" onclick="runTask('${t.id}')">🔄 重试</button></div>`:
+        `<div class="drg">${t.results.map((u,i)=>`<div class="rc"><img src="${u}" alt="${i+1}"><div class="ra"><button class="bs" onclick="dl('${u}','${esc(t.title)}_${i+1}')">💾 下载</button><button class="bs" onclick="window.open('${u}','_blank')">🔍 原图</button></div></div>`).join('')}</div>`}
+      </div>
+      ${!run?`<div class="dm"><div class="dm-h">修改意见</div><div class="dm-b">
+        <div><label class="lb">修改要求</label><textarea class="ta" id="modP" style="min-height:70px" placeholder="例如：颜色再鲜艳些，熊猫改成微笑..."></textarea></div>
+        <div><label class="lb">补充参考图</label>
+          <div class="ua" style="padding:12px;min-height:60px" onclick="document.getElementById('mru').click()"><p style="font-size:.75rem">点击上传</p></div>
+          <input type="file" id="mru" accept="image/*" multiple style="display:none" onchange="onModFile(this)">
+          <div class="pl" id="modPv"></div>
+        </div>
+        <button class="bm" id="modBtn" onclick="doMod('${t.id}')">🚀 提交修改并重新生成</button>
+      </div></div>`:''}
+    </div>
+  </div></div>`;
+
+  if (run) setTimeout(poll, 2500);
+}
+
+function poll() {
+  const t = tasks.find(x=>x.id===activeId);
+  if (t && t.status==='running') {
+    renderDetail(document.getElementById('mn'), t);
+    renderList();
   }
-}
-
-function renderWorkspace(c) {
-  c.innerHTML = `<div class="main-toolbar"><h2>新建任务</h2></div>
-    <div class="main-content"><div class="workspace">
-      <div class="workspace-title"><h2>开始生成你的图片</h2><p>输入提示词，上传参考图，一键生成高质量图片</p></div>
-      <div class="form-grid">
-        <div class="form-section form-full"><h3><span class="icon">✨</span> 提示词</h3>
-          <textarea class="form-textarea" id="taskPrompt" placeholder="描述你想要生成的图片，例如：为国潮品牌'熊猫茶馆'设计宣传海报，画面中央是可爱的熊猫正在泡茶，背景竹林远山，配色墨绿金色..."></textarea>
-        </div>
-        <div class="form-section"><h3><span class="icon">🖼️</span> 风格参考图 <span style="font-weight:400;color:var(--text3);font-size:0.8rem">（可选）</span></h3>
-          <div class="image-upload-area" onclick="document.getElementById('refUpload').click()"><div class="upload-icon">📤</div><p>点击上传</p></div>
-          <input type="file" id="refUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'reference')">
-          <div class="image-preview-list" id="refPreviewList"></div>
-        </div>
-        <div class="form-section"><h3><span class="icon">📎</span> 素材图 <span style="font-weight:400;color:var(--text3);font-size:0.8rem">（可选）</span></h3>
-          <div class="image-upload-area" onclick="document.getElementById('matUpload').click()"><div class="upload-icon">📤</div><p>点击上传</p></div>
-          <input type="file" id="matUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'material')">
-          <div class="image-preview-list" id="matPreviewList"></div>
-        </div>
-        <div class="form-section"><h3><span class="icon">⚙️</span> 生成设置</h3>
-          <div class="form-row">
-            <div><label class="form-label">生成数量</label><input type="number" class="form-input" id="taskCount" min="1" max="10" value="1" style="width:80px;text-align:center"></div>
-            <div><label class="form-label">尺寸</label><select class="form-select" id="taskSize"><option value="1024x1024">1024×1024</option><option value="1536x1024">1536×1024</option><option value="1024x1536">1024×1536</option></select></div>
-          </div>
-        </div>
-      </div>
-    </div></div>
-    <div class="generate-bar">
-      <span style="font-size:0.85rem;color:var(--text2)">出图: <b style="color:var(--text)">${config.imageModel}</b> | 识图: <b style="color:var(--text)">${config.visionModel}</b></span>
-      <button class="btn-generate" onclick="handleGenerate()">🚀 一键生成</button>
-    </div>`;
-}
-
-function renderTaskForm(c, task) {
-  c.innerHTML = `<div class="main-toolbar"><h2>编辑任务</h2>
-      <div class="toolbar-actions"><button class="btn-sm" onclick="deleteTask('${task.id}')">🗑️ 删除</button></div>
-    </div>
-    <div class="main-content"><div class="workspace">
-      <div class="form-grid">
-        <div class="form-section form-full"><h3><span class="icon">✨</span> 提示词</h3>
-          <textarea class="form-textarea" id="taskPrompt">${esc(task.prompt)}</textarea>
-        </div>
-        <div class="form-section"><h3><span class="icon">🖼️</span> 风格参考图</h3>
-          <div class="image-upload-area" onclick="document.getElementById('refUpload').click()"><p>点击上传</p></div>
-          <input type="file" id="refUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'reference')">
-          <div class="image-preview-list" id="refPreviewList">${(task.referenceImages||[]).map((img,i)=>`<div class="image-preview-item"><img src="${img}"><div class="remove-btn" onclick="removeTaskImage('${task.id}','reference',${i})">×</div></div>`).join('')}</div>
-        </div>
-        <div class="form-section"><h3><span class="icon">📎</span> 素材图</h3>
-          <div class="image-upload-area" onclick="document.getElementById('matUpload').click()"><p>点击上传</p></div>
-          <input type="file" id="matUpload" accept="image/*" multiple style="display:none" onchange="handleFileUpload(this,'material')">
-          <div class="image-preview-list" id="matPreviewList">${(task.materialImages||[]).map((img,i)=>`<div class="image-preview-item"><img src="${img}"><div class="remove-btn" onclick="removeTaskImage('${task.id}','material',${i})">×</div></div>`).join('')}</div>
-        </div>
-        <div class="form-section"><h3><span class="icon">⚙️</span> 数量</h3>
-          <input type="number" class="form-input" id="taskCount" min="1" max="10" value="${task.count||1}" style="width:80px;text-align:center">
-        </div>
-      </div>
-    </div></div>
-    <div class="generate-bar"><button class="btn-generate" onclick="handleGenerate()">🚀 一键生成</button></div>`;
-}
-
-function renderTaskDetail(c, task) {
-  const running = task.status === 'running';
-  const error = task.status === 'error';
-
-  c.innerHTML = `<div class="main-toolbar"><h2>${esc(task.title)}</h2>
-      <div class="toolbar-actions">
-        ${running?`<button class="btn-sm" onclick="cancelTask('${task.id}')">⏹ 取消</button>`:''}
-        ${(task.status==='done'||error)?`<button class="btn-sm" onclick="resetTask('${task.id}')">✏️ 编辑</button>`:''}
-        <button class="btn-sm" onclick="deleteTask('${task.id}')">🗑️ 删除</button>
-      </div>
-    </div>
-    <div class="main-content"><div class="task-detail">
-      <div class="detail-header"><div class="detail-info"><h3>
-        ${running?'<span class="status-dot running" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>生成中...':
-          error?'<span class="status-dot error" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>失败':
-          `<span class="status-dot done" style="display:inline-block;margin-right:6px;vertical-align:middle"></span>完成 · ${task.results.length}张`}
-      </h3><p>${task.statusMessage||(error?task.error:'')}</p></div></div>
-      <div class="detail-content">
-        <div class="detail-results">
-          ${running?`<div class="empty-state"><div class="loading-spinner" style="width:40px;height:40px;margin-bottom:16px"></div><p>正在生成图片，请稍候...</p><p class="progress-text">${task.statusMessage||''}</p><div class="loading-bar" style="width:200px;margin-top:12px"><div class="loading-bar-fill"></div></div></div>`:
-          error?`<div class="empty-state"><div class="empty-icon">⚠️</div><p style="color:var(--danger)">${esc(task.error)}</p><button class="btn-sm" style="margin-top:12px" onclick="runTask('${task.id}')">🔄 重试</button></div>`:
-          `<div class="detail-results-grid">${task.results.map((url,i)=>`<div class="result-card"><img src="${url}" alt="结果${i+1}" loading="lazy"><div class="result-card-actions"><button class="btn-sm" onclick="downloadImage('${url}','${esc(task.title)}_${i+1}')">💾 下载</button><button class="btn-sm" onclick="window.open('${url}','_blank')">🔍 原图</button></div></div>`).join('')}</div>`}
-        </div>
-        ${!running?`<div class="detail-modify">
-          <div class="detail-modify-header">修改意见</div>
-          <div class="detail-modify-body">
-            <div><label class="form-label">描述修改要求</label><textarea class="modify-textarea" id="modifyPrompt" placeholder="例如：颜色再鲜艳些，熊猫表情改成微笑..."></textarea></div>
-            <div><label class="form-label">补充参考图（可选）</label>
-              <div class="image-upload-area" style="padding:16px;min-height:80px" onclick="document.getElementById('modifyRefUpload').click()"><p style="font-size:0.8rem">点击上传</p></div>
-              <input type="file" id="modifyRefUpload" accept="image/*" multiple style="display:none" onchange="handleModifyUpload(this)">
-              <div class="image-preview-list" id="modifyPreviewList"></div>
-            </div>
-            <button class="btn-modify" id="btnModify" onclick="handleModify('${task.id}')">🚀 提交修改并重新生成</button>
-          </div>
-        </div>`:''}
-      </div>
-    </div></div>`;
-
-  if (running) setTimeout(() => {
-    const ct = tasks.find(t => t.id === task.id);
-    if (ct && ct.status === 'running') renderTaskDetail(document.getElementById('mainArea'), ct);
-  }, 2000);
 }
 
 // ===== Handlers =====
-function selectTask(id) { activeTaskId = id; renderAll(); }
+function pick(id) { activeId=id; render(); }
 
-function removeTaskImage(taskId, type, idx) {
-  const task = tasks.find(t => t.id === taskId);
-  if (!task) return;
-  (type==='reference' ? task.referenceImages : task.materialImages).splice(idx, 1);
-  saveTasks(); renderMainArea();
+function delTI(id, type, idx) {
+  const t = tasks.find(x=>x.id===id);
+  if (!t) return;
+  const arr = type==='ref' ? t.referenceImages : t.materialImages;
+  arr.splice(idx,1); sTasks(); renderMain();
 }
 
-async function compressImage(dataUrl) {
-  return new Promise(resolve => {
+function cancelT(id) { const t=tasks.find(x=>x.id===id); if(t?.abortController) t.abortController.abort(); }
+
+function resetT(id) { const t=tasks.find(x=>x.id===id); if(t){t.results=[];t.status='pending';t.error=null;sTasks();render();} }
+
+async function compress(b64) {
+  return new Promise(r => {
     const img = new Image();
     img.onload = () => {
       const cv = document.createElement('canvas');
-      let w = img.width, h = img.height;
-      const max = 1024;
-      if (w > max || h > max) { if (w>h){h=h*max/w;w=max}else{w=w*max/h;h=max} }
-      cv.width=w; cv.height=h;
-      cv.getContext('2d').drawImage(img,0,0,w,h);
-      resolve(cv.toDataURL('image/jpeg',0.85));
+      let w=img.width, h=img.height, mx=1024;
+      if(w>mx||h>mx){if(w>h){h=h*mx/w;w=mx}else{w=w*mx/h;h=mx}}
+      cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
+      r(cv.toDataURL('image/jpeg',.85));
     };
-    img.src = dataUrl;
+    img.src = b64;
   });
 }
 
-async function handleFileUpload(input, type) {
-  const list = type==='reference' ? tempRefImages : tempMatImages;
-  const pid = type==='reference' ? 'refPreviewList' : 'matPreviewList';
-  for (const f of input.files) {
+async function onFile(inp, type) {
+  const arr = type==='ref' ? tmpRef : tmpMat;
+  const pid = type==='ref' ? 'rp' : 'mp';
+  for (const f of inp.files) {
     const d = await new Promise(r => { const rd=new FileReader(); rd.onload=e=>r(e.target.result); rd.readAsDataURL(f); });
-    list.push(await compressImage(d));
+    arr.push(await compress(d));
   }
-  renderPreviews(pid, list, type);
-  input.value = '';
+  renderPreviews(pid, arr, type);
+  inp.value='';
 }
 
-async function handleModifyUpload(input) {
-  for (const f of input.files) {
+async function onModFile(inp) {
+  for (const f of inp.files) {
     const d = await new Promise(r => { const rd=new FileReader(); rd.onload=e=>r(e.target.result); rd.readAsDataURL(f); });
-    tempModifyImages.push(await compressImage(d));
+    tmpMod.push(await compress(d));
   }
-  renderModifyPreviews();
-  input.value = '';
+  renderModPreviews();
+  inp.value='';
 }
 
-function renderPreviews(id, imgs, type) {
+function renderPreviews(id, arr, type) {
   const c = document.getElementById(id);
-  if (!c) return;
-  c.innerHTML = imgs.map((img,i)=>`<div class="image-preview-item"><img src="${img}"><div class="remove-btn" onclick="removeTempImage('${type}',${i})">×</div></div>`).join('');
+  if(!c) return;
+  c.innerHTML = arr.map((img,i)=>`<div class="pi"><img src="${img}"><div class="rm" onclick="rmTemp('${type}',${i})">×</div></div>`).join('');
 }
 
-function renderModifyPreviews() {
-  const c = document.getElementById('modifyPreviewList');
-  if (!c) return;
-  c.innerHTML = tempModifyImages.map((img,i)=>`<div class="image-preview-item"><img src="${img}"><div class="remove-btn" onclick="tempModifyImages.splice(${i},1);renderModifyPreviews()">×</div></div>`).join('');
+function renderModPreviews() {
+  const c = document.getElementById('modPv');
+  if(!c) return;
+  c.innerHTML = tmpMod.map((img,i)=>`<div class="pi"><img src="${img}"><div class="rm" onclick="tmpMod.splice(${i},1);renderModPreviews()">×</div></div>`).join('');
 }
 
-function removeTempImage(type, idx) {
-  const list = type==='reference' ? tempRefImages : tempMatImages;
-  list.splice(idx,1);
-  renderPreviews(type==='reference'?'refPreviewList':'matPreviewList', list, type);
+function rmTemp(type, idx) {
+  const arr = type==='ref' ? tmpRef : tmpMat;
+  arr.splice(idx,1);
+  renderPreviews(type==='ref'?'rp':'mp', arr, type);
 }
 
-async function handleGenerate() {
-  const pEl = document.getElementById('taskPrompt');
-  const cEl = document.getElementById('taskCount');
-  let task = getActiveTask();
+async function doGen() {
+  const pEl = document.getElementById('tp');
+  const cEl = document.getElementById('tc2');
+  const rEl = document.getElementById('tr');
+  let t = getActive();
 
   const prompt = pEl?.value?.trim() || '';
-  if (!prompt) { showToast('请输入提示词','error'); return; }
+  if (!prompt) { toast('请输入提示词','er'); return; }
 
-  if (!task) {
-    task = { id:Date.now().toString(), title:prompt.substring(0,20)+(prompt.length>20?'...':''), prompt, count:parseInt(cEl?.value||'1'), referenceImages:[...tempRefImages], materialImages:[...tempMatImages], status:'pending', results:[], error:null, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString() };
-    const sEl = document.getElementById('taskSize');
-    if (sEl) task.customSize = sEl.value;
-    tasks.unshift(task);
-    activeTaskId = task.id;
-    tempRefImages = []; tempMatImages = [];
-    saveTasks(); renderAll();
+  if (!t) {
+    t = {id:String(Date.now()), title:prompt.slice(0,20)+(prompt.length>20?'...':''), prompt, count:parseInt(cEl?.value||'1'), referenceImages:[...tmpRef], materialImages:[...tmpMat], status:'pending', results:[], error:null, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString()};
+    if (rEl) t.ratio = rEl.value;
+    tasks.unshift(t); activeId=t.id;
+    tmpRef=[];tmpMat=[];
+    sTasks(); render();
   } else {
-    task.prompt = prompt;
-    task.count = parseInt(cEl?.value||'1');
-    task.referenceImages = [...tempRefImages];
-    task.materialImages = [...tempMatImages];
-    task.title = prompt.substring(0,20)+(prompt.length>20?'...':'') || task.title;
-    tempRefImages = []; tempMatImages = [];
-    saveTasks(); renderAll();
+    t.prompt = prompt;
+    t.count = parseInt(cEl?.value||'1');
+    t.referenceImages = [...tmpRef];
+    t.materialImages = [...tmpMat];
+    t.title = prompt.slice(0,20)+(prompt.length>20?'...':'') || t.title;
+    if (rEl) t.ratio = rEl.value;
+    tmpRef=[];tmpMat=[];
+    sTasks(); render();
   }
 
-  // Run async so UI isn't blocked - user can create new tasks
-  runTask(task.id);
+  // Async - don't block UI
+  runTask(t.id);
 }
 
-async function handleModify(taskId) {
-  const mp = document.getElementById('modifyPrompt')?.value?.trim();
-  if (!mp) { showToast('请输入修改意见','error'); return; }
-  const btn = document.getElementById('btnModify');
+async function doMod(id) {
+  const mp = document.getElementById('modP')?.value?.trim();
+  if (!mp) { toast('请输入修改意见','er'); return; }
+  const btn = document.getElementById('modBtn');
   if (btn) btn.disabled = true;
-  await modifyTask(taskId, mp, [...tempModifyImages]);
-  tempModifyImages = [];
+  await doModify(id, mp, [...tmpMod]);
+  tmpMod = [];
 }
 
-function cancelTask(id) { const t=tasks.find(x=>x.id===id); if(t?.abortController) t.abortController.abort(); }
-
-function resetTask(id) {
-  const t = tasks.find(x=>x.id===id);
-  if (t) { t.results=[]; t.status='pending'; t.error=null; saveTasks(); renderAll(); }
+function dl(url, fn) {
+  const a = document.createElement('a'); a.href=url; a.download=fn+'.png';
+  document.body.appendChild(a); a.click(); a.remove();
 }
-
-function downloadImage(url, fn) { const a=document.createElement('a'); a.href=url; a.download=fn+'.png'; a.click(); }
 
 // ===== Settings =====
-function openSettings() {
-  document.getElementById('apiBaseUrl').value = config.apiBaseUrl;
-  document.getElementById('apiKey').value = config.apiKey;
-  document.getElementById('visionModel').value = config.visionModel;
-  document.getElementById('imageModel').value = config.imageModel;
-  document.getElementById('imageSize').value = config.imageSize;
-  document.getElementById('settingsModal').classList.add('active');
+function openSet() {
+  document.getElementById('sUrl').value=cfg.apiBaseUrl;
+  document.getElementById('sKey').value=cfg.apiKey;
+  document.getElementById('sVis').value=cfg.visionModel;
+  document.getElementById('sRatio').value=cfg.ratio;
+  document.getElementById('sQual').value=cfg.quality;
+  document.getElementById('mo').classList.add('a');
 }
-
-function closeSettings() { document.getElementById('settingsModal').classList.remove('active'); }
-
-function saveSettings() {
-  config.apiBaseUrl = document.getElementById('apiBaseUrl').value.replace(/\/$/,'');
-  config.apiKey = document.getElementById('apiKey').value.trim();
-  config.visionModel = document.getElementById('visionModel').value;
-  config.imageModel = document.getElementById('imageModel').value;
-  config.imageSize = document.getElementById('imageSize').value;
-  saveConfig(); closeSettings();
-  showToast('设置已保存','success'); renderAll();
+function closeSet() { document.getElementById('mo').classList.remove('a'); }
+function saveSet() {
+  cfg.apiBaseUrl = document.getElementById('sUrl').value.replace(/\/$/,'');
+  cfg.apiKey = document.getElementById('sKey').value.trim();
+  cfg.visionModel = document.getElementById('sVis').value;
+  cfg.ratio = document.getElementById('sRatio').value;
+  cfg.quality = document.getElementById('sQual').value;
+  sCfg(); closeSet(); toast('已保存','ok'); render();
 }
 
 // ===== Utils =====
-function formatTime(s) {
-  if (!s) return '';
-  const d = new Date(s), now = new Date(), diff = now - d;
-  if (diff < 60000) return '刚刚';
-  if (diff < 3600000) return Math.floor(diff/60000)+'分钟前';
-  if (diff < 86400000) return Math.floor(diff/3600000)+'小时前';
+function fmtTime(s) {
+  if(!s) return '';
+  const d=new Date(s), n=new Date(), diff=n-d;
+  if(diff<60000) return '刚刚';
+  if(diff<3600000) return Math.floor(diff/60000)+'分前';
+  if(diff<86400000) return Math.floor(diff/3600000)+'小时前';
   return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
-
-function esc(s) { if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function showToast(msg, type='info') {
-  const c = document.getElementById('toastContainer');
-  const t = document.createElement('div'); t.className = `toast ${type}`; t.textContent = msg;
-  c.appendChild(t); setTimeout(()=>t.remove(), 3000);
-}
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function toast(msg,type='inf'){const c=document.getElementById('tc'),t=document.createElement('div');t.className=`tt ${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000);}
 
 // ===== Init =====
 function init() {
-  if (tasks.length === 0) { activeTaskId = null; }
-  else if (!activeTaskId || !tasks.find(t=>t.id===activeTaskId)) { activeTaskId = tasks[0].id; }
-  renderAll();
-
-  // Poll running tasks
-  setInterval(() => {
-    const rt = tasks.find(t => t.status === 'running');
-    if (rt && rt.id === activeTaskId) renderTaskDetail(document.getElementById('mainArea'), rt);
+  if(!tasks.length) activeId=null;
+  else if(!activeId||!tasks.find(t=>t.id===activeId)) activeId=tasks[0].id;
+  render();
+  setInterval(()=>{
+    const rt=tasks.find(t=>t.status==='running');
+    if(rt) { renderList(); if(rt.id===activeId) renderDetail(document.getElementById('mn'),rt); }
   }, 3000);
 }
-
 init();
 </script>
 </body>
