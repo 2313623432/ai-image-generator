@@ -161,10 +161,28 @@ textarea.inp::placeholder{color:var(--text3)}
 const RATIO = {'1:1':'1024x1024','3:4':'768x1024','4:3':'1024x768','9:16':'768x1344','16:9':'1344x768'};
 const STYLE_PROMPT = `分析图片的视觉风格，精确描述：1.画面风格 2.配色方案 3.构图方式 4.光影效果 5.关键元素 6.整体氛围。用专业语言描述，让AI绘图能复现此风格。`;
 
+const MAT_PROMPT = `分析这张图片中的视觉元素（人物、Logo、物体、文字等），详细描述其外观特征、颜色、形状、位置等。这些元素需要被融入新生成的图片中。请精确描述以便AI绘图能识别并还原这些元素。`;
+
+const GEN_REQUIREMENTS = `
+
+=== GENERATION REQUIREMENTS ===
+You are a professional commercial image generator. Follow these rules strictly:
+
+1. STYLE CONSISTENCY: Match the reference style EXACTLY - same art style, color palette, lighting mood, and composition approach. Do not deviate from the referenced aesthetic.
+
+2. MATERIAL INTEGRATION: All referenced material elements (logos, characters, objects) must appear naturally in the composition at appropriate positions. They should be clearly recognizable and well-integrated into the scene, not awkwardly placed or distorted.
+
+3. COMPOSITION: Use professional composition principles. Maintain visual hierarchy with a clear focal point. Ensure balanced layout and proper use of negative space.
+
+4. QUALITY: Output must be commercial-grade quality - sharp details, accurate colors, professional lighting, no artifacts or distortions.
+
+5. COHERENCE: All elements must work together harmoniously. The final image should look like a cohesive professional design, not a collage of separate elements.`;
+
 let cfg = {apiBaseUrl:'https://lingyao.world', apiKey:'', visionModel:'qwen3-vl-plus', quality:'medium'};
 let tasks = [];
 let activeId = null;
-let pendingImgs = [];
+let pendingRefs = [];
+let pendingMats = [];
 
 function load(){try{const c=localStorage.getItem('aic');if(c)cfg={...cfg,...JSON.parse(c)};const t=localStorage.getItem('ait');if(t)tasks=JSON.parse(t)}catch(e){}}
 function sTasks(){try{localStorage.setItem('ait',JSON.stringify(tasks))}catch(e){}}
@@ -191,10 +209,12 @@ async function apiImg(prompt, sig){
   return (await r.json()).data||[];
 }
 
-async function analyze(b64, sig){
+async function analyze(b64, sig, type){
+  const prompt = type==='mat' ? MAT_PROMPT : STYLE_PROMPT;
+  const text = type==='mat' ? '请分析此图片中的元素。' : '请分析此图片的风格。';
   return apiChat([
-    {role:'system',content:STYLE_PROMPT},
-    {role:'user',content:[{type:'image_url',image_url:{url:b64}},{type:'text',text:'请分析此图片的风格。'}]}
+    {role:'system',content:prompt},
+    {role:'user',content:[{type:'image_url',image_url:{url:b64}},{type:'text',text}]}
   ],sig);
 }
 
@@ -214,7 +234,7 @@ function delTask(id){
 
 function getActive(){return tasks.find(t=>t.id===activeId)||null}
 
-async function sendMessage(taskId, prompt, refs){
+async function sendMessage(taskId, prompt, refs, mats){
   const t=tasks.find(x=>x.id===taskId);
   if(!t||t.generating)return;
   if(!prompt.trim()){toast('请输入提示词','er');return}
@@ -224,35 +244,32 @@ async function sendMessage(taskId, prompt, refs){
   t.abort=ctrl;
   t.generating=true;
 
-  // Build message
-  const msg = {
-    role:'user',
-    prompt,
-    refs: refs||[],
-    timestamp: Date.now()
-  };
+  const msg = {role:'user', prompt, refs:refs||[], mats:mats||[], timestamp:Date.now()};
   t.messages.push(msg);
 
-  // Create placeholder for AI response
   const aiMsg = {role:'ai', images:[], status:'loading', timestamp:Date.now()};
   t.messages.push(aiMsg);
 
-  // Update title from first prompt
   if(t.messages.length<=2) t.title = prompt.slice(0,24)+(prompt.length>24?'...':'');
-
   t.updatedAt = new Date().toISOString();
   sTasks(); render();
 
   try {
     let fullPrompt = prompt;
 
-    // Analyze references
+    // Analyze style references
     if(refs && refs.length){
-      const parts = await Promise.all(refs.map(r=>analyze(r,ctrl.signal)));
-      fullPrompt += '\n\n--- 参考图分析 ---\n'+parts.map((p,i)=>`参考图${i+1}: ${p}`).join('\n\n');
+      const styleParts = await Promise.all(refs.map(r=>analyze(r, ctrl.signal, 'style')));
+      fullPrompt += '\n\n--- 风格参考 ---\n'+styleParts.map((p,i)=>`参考图${i+1}: ${p}`).join('\n\n');
     }
 
-    fullPrompt += '\n\nGenerate a professional, high-quality commercial-grade image with exact composition and precise colors.';
+    // Analyze material elements
+    if(mats && mats.length){
+      const matParts = await Promise.all(mats.map(r=>analyze(r, ctrl.signal, 'mat')));
+      fullPrompt += '\n\n--- 画面素材元素（需要出现在最终图片中）---\n'+matParts.map((p,i)=>`素材${i+1}: ${p}`).join('\n\n');
+    }
+
+    fullPrompt += GEN_REQUIREMENTS;
 
     const data = await apiImg(fullPrompt, ctrl.signal);
     const urls = data.map(x=>{
@@ -313,7 +330,8 @@ function renderChat(){
       return `<div class="chat-msg">
         <div class="msg-label"><span class="dot" style="background:var(--text3)"></span>你</div>
         <div class="msg-prompt">${esc(m.prompt)}</div>
-        ${m.refs&&m.refs.length?`<div class="msg-refs">${m.refs.map(r=>`<img src="${r}">`).join('')}</div>`:''}
+        ${m.refs&&m.refs.length?`<div class="msg-refs"><span style="font-size:.65rem;color:var(--text3);margin-right:4px">风格参考:</span>${m.refs.map(r=>`<img src="${r}">`).join('')}</div>`:''}
+        ${m.mats&&m.mats.length?`<div class="msg-refs"><span style="font-size:.65rem;color:var(--text3);margin-right:4px">素材:</span>${m.mats.map(r=>`<img src="${r}">`).join('')}</div>`:''}
       </div>`;
     }
     if(m.role==='ai'){
@@ -342,8 +360,11 @@ function renderChat(){
       <div class="input-row">
         <div class="input-wrap">
           <div class="input-top">
-            <label onclick="document.getElementById('inpRef').click()">📎 参考图
-              <input type="file" id="inpRef" accept="image/*" multiple style="display:none" onchange="onInpRef(this)">
+            <label onclick="document.getElementById('inpRef').click()" title="风格参考图">🖼️ 参考图
+              <input type="file" id="inpRef" accept="image/*" multiple style="display:none" onchange="onInpFile(this,'ref')">
+            </label>
+            <label onclick="document.getElementById('inpMat').click()" title="素材图（出现在画面中）">📎 素材
+              <input type="file" id="inpMat" accept="image/*" multiple style="display:none" onchange="onInpFile(this,'mat')">
             </label>
             <div class="img-preview" id="inpPv"></div>
           </div>
@@ -374,10 +395,11 @@ function renderChat(){
 // ===== Handlers =====
 function pick(id){activeId=id;render()}
 
-async function onInpRef(inp){
+async function onInpFile(inp, type){
+  const arr = type==='ref' ? pendingRefs : pendingMats;
   for(const f of inp.files){
     const d = await new Promise(r=>{const rd=new FileReader();rd.onload=e=>r(e.target.result);rd.readAsDataURL(f)});
-    pendingImgs.push(await compress(d));
+    arr.push(await compress(d));
   }
   renderPending();
   inp.value='';
@@ -386,8 +408,15 @@ async function onInpRef(inp){
 function renderPending(){
   const c=document.getElementById('inpPv');
   if(!c)return;
-  c.innerHTML=pendingImgs.map((img,i)=>`<div style="position:relative;display:inline-block">
-    <img src="${img}"><div class="rm" onclick="pendingImgs.splice(${i},1);renderPending()">×</div></div>`).join('');
+  const all = pendingRefs.map((img,i)=>({img,i,type:'ref'})).concat(pendingMats.map((img,i)=>({img,i,type:'mat'})));
+  c.innerHTML = all.map(({img,i,type})=>`<div style="position:relative;display:inline-block">
+    <img src="${img}" title="${type==='ref'?'参考图':'素材'}"><div class="rm" onclick="rmPending('${type}',${i})">×</div></div>`).join('');
+}
+
+function rmPending(type,idx){
+  if(type==='ref') pendingRefs.splice(idx,1);
+  else pendingMats.splice(idx,1);
+  renderPending();
 }
 
 function sendChat(){
@@ -396,19 +425,15 @@ function sendChat(){
   if(!inp)return;
   const prompt=inp.value.trim();
   if(!prompt)return;
-
-  // Save ratio
   if(ratioEl) cfg.ratio=ratioEl.value;
 
-  const refs=[...pendingImgs];
-  pendingImgs=[];
+  const refs=[...pendingRefs], mats=[...pendingMats];
+  pendingRefs=[];pendingMats=[];
   inp.value='';
-
-  // Clear pending previews
   const pv=document.getElementById('inpPv');
   if(pv) pv.innerHTML='';
 
-  sendMessage(activeId, prompt, refs);
+  sendMessage(activeId, prompt, refs, mats);
 }
 
 async function compress(b64){
