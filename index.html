@@ -64,8 +64,9 @@ input,textarea,select{font-family:inherit;outline:none}
 .msg-prompt{font-size:.88rem;color:var(--text);line-height:1.6;margin-bottom:12px;white-space:pre-wrap}
 .msg-refs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
 .msg-refs img{width:56px;height:56px;object-fit:cover;border-radius:var(--rs);border:1px solid var(--border)}
-.msg-images{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.msg-images img{width:100%;border-radius:var(--r);display:block;object-fit:contain;background:var(--surface);max-height:480px;cursor:pointer;transition:var(--t)}
+.msg-images{display:flex;flex-wrap:wrap;gap:14px}
+.msg-images .img-wrap{flex:1 1 300px;max-width:480px;min-width:200px}
+.msg-images .img-wrap img{width:100%;border-radius:var(--r);display:block;background:var(--surface);cursor:pointer;transition:var(--t)}
 .msg-images img:hover{opacity:.9}
 .msg-img-actions{display:flex;gap:4px;margin-top:8px}
 .msg-img-actions .bs{padding:4px 8px;font-size:.7rem;background:var(--surface);color:var(--text2);border-radius:4px}
@@ -362,7 +363,7 @@ function renderChat(){
       }
       return `<div class="chat-msg">
         <div class="msg-label"><span class="dot"></span>AI · ${m.images.length}张</div>
-        <div class="msg-images">${m.images.map((u,j)=>`<div><img src="${u}" onclick="openLB('${u}')" loading="lazy"><div class="msg-img-actions"><button class="bs" onclick="dlImg('${u}','${i}_${j}')">💾 下载</button></div></div>`).join('')}</div>
+        <div class="msg-images">${m.images.map((u,j)=>`<div class="img-wrap"><img src="${u}" onclick="openLB('${u}')" loading="lazy"><div class="msg-img-actions"><button class="bs" onclick="dlImg('${u}','${i}_${j}')">💾 下载</button></div></div>`).join('')}</div>
       </div>`;
     }
     return '';
