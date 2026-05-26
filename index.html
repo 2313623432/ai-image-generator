@@ -4,636 +4,477 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI 图片生成器</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#08080c;--surface:#101018;--surface2:#181822;--surface3:#222230;
-  --border:#282838;--border-h:#383850;
+  --bg:#08080c;--side:#0e0e16;--surface:#14141e;--surface2:#1c1c2a;--surface3:#262636;
+  --border:#2a2a3c;--border-h:#3a3a52;
   --text:#eeeef4;--text2:#9898b0;--text3:#585868;
-  --pri:#7c6aef;--pri-l:#9d8fff;--pri-d:#6354d4;
+  --pri:#7c6aef;--pri-l:#a78bfa;--pri-d:#6354d4;
   --ok:#22c55e;--warn:#f59e0b;--err:#ef4444;
-  --r:10px;--rs:6px;--rl:14px;
-  --shadow:0 4px 24px rgba(0,0,0,.5);
-  --t:all .2s ease;
+  --r:10px;--rs:6px;
+  --t:all .15s ease;
 }
 html{font-size:14px}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
 button{font-family:inherit;cursor:pointer;border:none;outline:none}
 input,textarea,select{font-family:inherit;outline:none}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-.app{display:grid;grid-template-columns:260px 1fr;height:100vh}
+.app{display:grid;grid-template-columns:240px 1fr;height:100vh}
 
 /* Sidebar */
-.sb{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.sb-h{padding:18px 20px;border-bottom:1px solid var(--border)}
-.sb-h h1{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,var(--pri-l),#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.sb-h p{font-size:.72rem;color:var(--text3);margin-top:3px}
-.sb-actions{padding:10px 12px;display:flex;gap:8px;border-bottom:1px solid var(--border)}
-.btn-new{flex:1;padding:9px;background:var(--pri);color:#fff;border-radius:var(--rs);font-size:.82rem;font-weight:600;transition:var(--t);display:flex;align-items:center;justify-content:center;gap:5px}
+.sb{background:var(--side);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sb-h{padding:16px 18px;border-bottom:1px solid var(--border)}
+.sb-h h1{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,var(--pri-l),#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sb-actions{padding:8px 10px;display:flex;gap:6px;border-bottom:1px solid var(--border)}
+.btn-new{flex:1;padding:8px;background:var(--pri);color:#fff;border-radius:var(--rs);font-size:.78rem;font-weight:600;transition:var(--t);display:flex;align-items:center;justify-content:center;gap:4px}
 .btn-new:hover{background:var(--pri-l)}
-.btn-set{padding:9px 11px;background:var(--surface2);color:var(--text2);border-radius:var(--rs);transition:var(--t)}
-.btn-set:hover{background:var(--surface3);color:var(--text)}
+.btn-set{padding:8px 10px;background:var(--surface);color:var(--text2);border-radius:var(--rs);transition:var(--t);font-size:.9rem}
+.btn-set:hover{background:var(--surface2);color:var(--text)}
 .tl{flex:1;overflow-y:auto;padding:6px}
-.ti{padding:10px 12px;border-radius:var(--rs);cursor:pointer;transition:var(--t);margin-bottom:3px;border:1px solid transparent;position:relative}
-.ti:hover{background:var(--surface2)}
-.ti.act{background:var(--surface2);border-color:var(--pri)}
-.ti-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.ti-title{font-weight:600;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
-.ti-time{font-size:.65rem;color:var(--text3);flex-shrink:0}
-.ti-st{display:flex;align-items:center;gap:5px}
-.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.dot.p{background:var(--text3)}.dot.r{background:var(--warn);animation:pls 1.5s infinite}.dot.d{background:var(--ok)}.dot.e{background:var(--err)}
-@keyframes pls{0%,100%{opacity:1}50%{opacity:.4}}
-.ti-st span{font-size:.7rem;color:var(--text2)}
-.ti-prev{font-size:.7rem;color:var(--text3);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lbar{height:2px;background:var(--surface3);border-radius:1px;margin-top:6px;overflow:hidden}
-.lbar i{display:block;height:100%;width:40%;background:linear-gradient(90deg,var(--pri),var(--pri-l));border-radius:1px;animation:lp 1.5s ease infinite}
-@keyframes lp{0%{margin-left:-40%}100%{margin-left:100%}}
-.ti .del{position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:50%;background:rgba(239,68,68,.2);color:var(--err);font-size:.6rem;display:none;align-items:center;justify-content:center}
-.ti:hover .del{display:flex}
+.ti{padding:8px 10px;border-radius:var(--rs);cursor:pointer;transition:var(--t);margin-bottom:2px;border:1px solid transparent;display:flex;align-items:center;gap:8px}
+.ti:hover{background:var(--surface)}
+.ti.act{background:var(--surface);border-color:var(--pri)}
+.ti-thumb{width:32px;height:32px;border-radius:4px;overflow:hidden;flex-shrink:0;background:var(--surface2)}
+.ti-thumb img{width:100%;height:100%;object-fit:cover}
+.ti-thumb .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:.7rem}
+.ti-info{flex:1;min-width:0}
+.ti-title{font-weight:600;font-size:.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ti-time{font-size:.62rem;color:var(--text3);margin-top:2px}
+.ti .del-btn{width:18px;height:18px;border-radius:50%;background:rgba(239,68,68,.15);color:var(--err);font-size:.6rem;display:none;align-items:center;justify-content:center;flex-shrink:0}
+.ti:hover .del-btn{display:flex}
 
-/* Main */
-.mn{display:flex;flex-direction:column;overflow:hidden}
-.mn-bar{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.mn-bar h2{font-size:1rem;font-weight:600;flex:1}
-.mn-body{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.ws{flex:1;overflow-y:auto;padding:20px}
-.ws-h{text-align:center;margin-bottom:20px}
-.ws-h h2{font-size:1.4rem;font-weight:700;margin-bottom:6px}
-.ws-h p{color:var(--text2);font-size:.9rem}
+/* Chat Area */
+.chat{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.chat-h{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.chat-h h2{font-size:.95rem;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-h .acts{display:flex;gap:6px}
+.chat-h .acts .bs{padding:5px 10px;background:var(--surface);color:var(--text2);border-radius:var(--rs);font-size:.75rem;transition:var(--t)}
+.chat-h .acts .bs:hover{background:var(--surface2);color:var(--text)}
 
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:860px;margin:0 auto}
-.fs{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px}
-.fs h3{font-size:.92rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.ff{grid-column:1/-1}
+.chat-body{flex:1;overflow-y:auto;padding:0 20px}
+.chat-msg{padding:20px 0;border-bottom:1px solid var(--border)}
+.chat-msg:last-child{border-bottom:none}
+.msg-label{font-size:.72rem;color:var(--text3);margin-bottom:8px;font-weight:500;display:flex;align-items:center;gap:6px}
+.msg-label .dot{width:6px;height:6px;border-radius:50%;background:var(--pri)}
+.msg-prompt{font-size:.88rem;color:var(--text);line-height:1.6;margin-bottom:12px;white-space:pre-wrap}
+.msg-refs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.msg-refs img{width:56px;height:56px;object-fit:cover;border-radius:var(--rs);border:1px solid var(--border)}
+.msg-images{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.msg-images img{width:100%;border-radius:var(--r);display:block;object-fit:contain;background:var(--surface);max-height:480px;cursor:pointer;transition:var(--t)}
+.msg-images img:hover{opacity:.9}
+.msg-img-actions{display:flex;gap:4px;margin-top:8px}
+.msg-img-actions .bs{padding:4px 8px;font-size:.7rem;background:var(--surface);color:var(--text2);border-radius:4px}
+.msg-img-actions .bs:hover{background:var(--surface2);color:var(--text)}
+.msg-error{color:var(--err);font-size:.82rem;background:rgba(239,68,68,.08);padding:10px 14px;border-radius:var(--rs);margin-top:8px}
+.msg-loading{display:flex;align-items:center;gap:10px;padding:12px 0}
+.msg-loading .spin{width:22px;height:22px;border:2px solid var(--border);border-top-color:var(--pri);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.msg-loading span{font-size:.82rem;color:var(--text2)}
 
-.lb{display:block;font-size:.8rem;color:var(--text2);margin-bottom:6px;font-weight:500}
-.ta{width:100%;min-height:110px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:10px;font-size:.85rem;resize:vertical;transition:var(--t)}
-.ta:focus{border-color:var(--pri)}
-.ta::placeholder{color:var(--text3)}
-.fi{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:9px 11px;font-size:.85rem;transition:var(--t)}
-.fi:focus{border-color:var(--pri)}
-.fs2{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:9px 11px;font-size:.85rem;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath fill='%239898b0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
-
-.ua{border:2px dashed var(--border);border-radius:var(--rs);padding:20px;text-align:center;cursor:pointer;transition:var(--t);min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
-.ua:hover{border-color:var(--pri);background:rgba(124,106,239,.04)}
-.ua .ui{font-size:1.8rem;opacity:.4}
-.ua p{color:var(--text3);font-size:.8rem}
-
-.pl{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.pi{position:relative;width:70px;height:70px;border-radius:var(--rs);overflow:hidden;border:1px solid var(--border)}
-.pi img{width:100%;height:100%;object-fit:cover}
-.pi .rm{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;font-size:.65rem;display:none;align-items:center;justify-content:center;cursor:pointer}
-.pi:hover .rm{display:flex}
-
-.fr{display:flex;gap:10px}
-.fr>*{flex:1}
-
-.gbar{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--surface);border-top:1px solid var(--border)}
-.btn-gen{padding:11px 28px;background:linear-gradient(135deg,var(--pri),var(--pri-l));color:#fff;border-radius:var(--r);font-size:.95rem;font-weight:600;transition:var(--t);margin-left:auto;display:flex;align-items:center;gap:6px}
-.btn-gen:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,106,239,.4)}
-.btn-gen:disabled{opacity:.5;cursor:not-allowed;transform:none}
-
-/* Detail */
-.td{display:flex;flex-direction:column;height:100%}
-.dh{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.dhi{flex:1}
-.dhi h3{font-size:.95rem;font-weight:600}
-.dhi p{font-size:.72rem;color:var(--text3)}
-.dc{flex:1;display:flex;overflow:hidden}
-.dr{flex:1;padding:16px;overflow-y:auto}
-.drg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.rc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:var(--t)}
-.rc:hover{border-color:var(--border-h);transform:translateY(-2px)}
-.rc img{width:100%;display:block;object-fit:contain;background:#0a0a10;max-height:520px}
-.ra{padding:10px;display:flex;gap:6px}
-.bs{padding:5px 10px;background:var(--surface2);color:var(--text2);border-radius:var(--rs);font-size:.75rem;transition:var(--t)}
-.bs:hover{background:var(--surface3);color:var(--text)}
-
-.dm{width:340px;border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column}
-.dm-h{padding:14px;border-bottom:1px solid var(--border);font-weight:600;font-size:.9rem}
-.dm-b{flex:1;padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-.bm{width:100%;padding:9px;background:var(--pri);color:#fff;border-radius:var(--rs);font-weight:600;font-size:.82rem;transition:var(--t)}
-.bm:hover{background:var(--pri-l)}
-.bm:disabled{opacity:.5;cursor:not-allowed}
+/* Input Bar */
+.input-bar{padding:14px 20px;border-top:1px solid var(--border);background:var(--side)}
+.input-row{display:flex;gap:8px;align-items:flex-end}
+.input-wrap{flex:1;display:flex;flex-direction:column;gap:6px}
+.input-top{display:flex;gap:6px;align-items:center}
+.input-top label{font-size:.72rem;color:var(--text3);cursor:pointer;display:flex;align-items:center;gap:4px;padding:5px 10px;background:var(--surface);border-radius:var(--rs);transition:var(--t)}
+.input-top label:hover{background:var(--surface2)}
+.input-top .img-preview{display:flex;gap:4px}
+.input-top .img-preview img{width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid var(--border)}
+.input-top .img-preview .rm{position:relative;margin-left:-30px;margin-top:20px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.8);color:#fff;font-size:.55rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1}
+textarea.inp{width:100%;min-height:42px;max-height:120px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);padding:10px 12px;font-size:.88rem;resize:none;line-height:1.5;transition:var(--t)}
+textarea.inp:focus{border-color:var(--pri)}
+textarea.inp::placeholder{color:var(--text3)}
+.btn-send{padding:10px 20px;background:var(--pri);color:#fff;border-radius:var(--r);font-size:.88rem;font-weight:600;transition:var(--t);white-space:nowrap;min-height:42px}
+.btn-send:hover{background:var(--pri-l)}
+.btn-send:disabled{opacity:.4;cursor:not-allowed}
+.input-bottom{display:flex;gap:8px;align-items:center;margin-top:6px}
+.input-bottom select{background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--text2);padding:3px 6px;font-size:.7rem}
+.input-bottom span{font-size:.68rem;color:var(--text3)}
 
 /* Modal */
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:var(--t)}
 .mo.a{opacity:1;pointer-events:auto}
-.md{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);width:460px;max-height:75vh;overflow-y:auto;box-shadow:var(--shadow);transform:translateY(16px);transition:var(--t)}
+.md{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:440px;max-height:75vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.5);transform:translateY(16px);transition:var(--t)}
 .mo.a .md{transform:translateY(0)}
-.md-h{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.md-h h3{font-size:1rem;font-weight:600}
-.xb{width:30px;height:30px;border-radius:var(--rs);background:var(--surface2);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:var(--t)}
-.xb:hover{background:var(--surface3);color:var(--text)}
-.md-b{padding:18px 20px}
-.sg{margin-bottom:14px}
-.sg label{display:block;font-size:.8rem;color:var(--text2);margin-bottom:5px;font-weight:500}
-.sg input,.sg select{width:100%}
-.sh{font-size:.7rem;color:var(--text3);margin-top:3px}
-.md-f{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:6px}
-.bsv{padding:9px 22px;background:var(--pri);color:#fff;border-radius:var(--rs);font-weight:600;transition:var(--t)}
-.bsv:hover{background:var(--pri-l)}
-.bc{padding:9px 22px;background:var(--surface2);color:var(--text2);border-radius:var(--rs);transition:var(--t)}
-.bc:hover{background:var(--surface3)}
+.md-h{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.md-h h3{font-size:.95rem;font-weight:600}
+.md-b{padding:16px 18px}
+.sg{margin-bottom:12px}
+.sg label{display:block;font-size:.78rem;color:var(--text2);margin-bottom:4px;font-weight:500}
+.sg input,.sg select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:8px 10px;font-size:.82rem}
+.sg .hint{font-size:.68rem;color:var(--text3);margin-top:2px}
+.md-f{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:6px}
 
-.ld{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--pri);border-radius:50%;animation:sp .8s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-
-.es{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;color:var(--text3)}
-.es .ei{font-size:2.5rem;margin-bottom:12px;opacity:.3}
-
-.tc{position:fixed;top:16px;right:16px;z-index:200;display:flex;flex-direction:column;gap:6px}
-.tt{padding:10px 18px;border-radius:var(--rs);font-size:.82rem;animation:si .3s ease}
-.tt.ok{background:var(--ok);color:#fff}.tt.er{background:var(--err);color:#fff}.tt.inf{background:var(--pri);color:#fff}
+/* Toast */
+.tc{position:fixed;top:14px;right:14px;z-index:200;display:flex;flex-direction:column;gap:6px}
+.tt{padding:9px 16px;border-radius:var(--rs);font-size:.8rem;animation:si .25s ease}
+.tt.ok{background:var(--ok);color:#fff}.tt.er{background:var(--err);color:#fff}
 @keyframes si{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-@media(max-width:768px){.app{grid-template-columns:1fr}.sb{display:none}.fg{grid-template-columns:1fr}.dc{flex-direction:column}.dm{width:100%;border-left:none;border-top:1px solid var(--border)}}
+/* Lightbox */
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;display:flex;align-items:center;justify-content:center;cursor:zoom-out;opacity:0;pointer-events:none;transition:var(--t)}
+.lb.a{opacity:1;pointer-events:auto}
+.lb img{max-width:90vw;max-height:90vh;object-fit:contain}
+
+/* Empty */
+.es{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;color:var(--text3);padding:40px}
+.es .ei{font-size:3rem;margin-bottom:12px;opacity:.3}
+.es p{font-size:.9rem}
+
+@media(max-width:768px){.app{grid-template-columns:1fr}.sb{display:none}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sb">
-  <div class="sb-h"><h1>AI 图片生成器</h1><p>gpt-image-2 · 智能出图</p></div>
+  <div class="sb-h"><h1>AI 图片生成器</h1></div>
   <div class="sb-actions">
-    <button class="btn-new" onclick="newTask()">+ 新建任务</button>
-    <button class="btn-set" onclick="openSet()" title="设置">⚙️</button>
+    <button class="btn-new" onclick="newTask()">+ 新对话</button>
+    <button class="btn-set" onclick="openSet()">⚙️</button>
   </div>
   <div class="tl" id="tl"></div>
 </aside>
-<main class="mn" id="mn"></main>
+<main class="chat" id="chatArea"></main>
 </div>
 
 <div class="mo" id="mo">
 <div class="md">
-  <div class="md-h"><h3>API 配置</h3><button class="xb" onclick="closeSet()">×</button></div>
+  <div class="md-h"><h3>API 配置</h3><button class="btn-set" onclick="closeSet()" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:1rem">×</button></div>
   <div class="md-b">
-    <div class="sg"><label>API 地址</label><input class="fi" id="sUrl" placeholder="https://lingyao.world"><div class="sh">聚合API地址，末尾不带斜杠</div></div>
-    <div class="sg"><label>API Key</label><input class="fi" type="password" id="sKey" placeholder="sk-xxx"><div class="sh">仅保存在本地</div></div>
-    <div class="sg"><label>识图模型</label><select class="fs2" id="sVis"><option value="qwen3-vl-plus" selected>Qwen3-VL-Plus</option><option value="qwen-vl-max-latest">Qwen-VL-Max</option><option value="glm-4v-plus">GLM-4V-Plus</option></select></div>
-    <div class="sg"><label>图片比例</label><select class="fs2" id="sRatio"><option value="1:1">1:1 方形</option><option value="3:4">3:4 竖版</option><option value="4:3">4:3 横版</option><option value="9:16">9:16 手机竖屏</option><option value="16:9">16:9 宽屏</option></select></div>
-    <div class="sg"><label>质量</label><select class="fs2" id="sQual"><option value="low">低（快速）</option><option value="medium" selected>中（推荐）</option><option value="high">高（精细）</option></select></div>
+    <div class="sg"><label>API 地址</label><input id="sUrl" placeholder="https://lingyao.world"><div class="hint">聚合API地址</div></div>
+    <div class="sg"><label>API Key</label><input id="sKey" type="password" placeholder="sk-xxx"><div class="hint">仅保存在本地</div></div>
+    <div class="sg"><label>识图模型</label><select id="sVis"><option value="qwen3-vl-plus">Qwen3-VL-Plus</option><option value="qwen-vl-max-latest">Qwen-VL-Max</option></select></div>
+    <div class="sg"><label>质量</label><select id="sQual"><option value="low">低（快）</option><option value="medium" selected>中</option><option value="high">高（精）</option></select></div>
   </div>
-  <div class="md-f"><button class="bc" onclick="closeSet()">取消</button><button class="bsv" onclick="saveSet()">保存</button></div>
+  <div class="md-f"><button class="btn-set" onclick="closeSet()" style="padding:8px 20px;color:var(--text2);font-size:.85rem">取消</button><button class="btn-new" onclick="saveSet()" style="padding:8px 20px;font-size:.85rem">保存</button></div>
 </div>
 </div>
 <div class="tc" id="tc"></div>
+<div class="lb" id="lb" onclick="this.classList.remove('a')"><img id="lbImg" src=""></div>
 
 <script>
-const RATIO_MAP = {'1:1':'1024x1024','3:4':'768x1024','4:3':'1024x768','9:16':'768x1344','16:9':'1344x768'};
+const RATIO = {'1:1':'1024x1024','3:4':'768x1024','4:3':'1024x768','9:16':'768x1344','16:9':'1344x768'};
+const STYLE_PROMPT = `分析图片的视觉风格，精确描述：1.画面风格 2.配色方案 3.构图方式 4.光影效果 5.关键元素 6.整体氛围。用专业语言描述，让AI绘图能复现此风格。`;
 
-const CFG = {
-  apiBaseUrl: 'https://lingyao.world',
-  apiKey: '',
-  visionModel: 'qwen3-vl-plus',
-  ratio: '1:1',
-  quality: 'medium'
-};
-
-const PROMPT_STYLE = `分析上传图片的视觉风格，从以下维度精确描述：
-1. 画面风格（写实/扁平/插画/3D/手绘等）
-2. 配色方案（主色调、色彩氛围）
-3. 构图方式（居中/三分法/对称等）
-4. 光影效果（自然光/棚拍/逆光等）
-5. 关键视觉元素
-6. 整体氛围和情绪基调
-用专业精确语言描述，让AI绘图模型能完美复现此风格。`;
-
-const PROMPT_BASE = `\n\nGenerate a professional, high-quality image. Ensure exact composition, precise colors, professional lighting, and clean output suitable for commercial use.`;
-
-let cfg = {...CFG};
+let cfg = {apiBaseUrl:'https://lingyao.world', apiKey:'', visionModel:'qwen3-vl-plus', quality:'medium'};
 let tasks = [];
 let activeId = null;
-let tmpRef = [], tmpMat = [], tmpMod = [];
+let pendingImgs = [];
 
-function load() {
-  try {
-    const c = localStorage.getItem('ai_cfg');
-    if (c) cfg = {...CFG, ...JSON.parse(c)};
-    const t = localStorage.getItem('ai_tasks');
-    if (t) tasks = JSON.parse(t);
-    // migrate old pixel sizes
-    if (cfg.imageSize && !cfg.ratio) {
-      const m = {'1024x1024':'1:1','1536x1024':'4:3','1024x1536':'3:4','1920x1080':'16:9'};
-      cfg.ratio = m[cfg.imageSize] || '1:1';
-      delete cfg.imageSize;
-    }
-  } catch(e){}
-}
-function sTasks(){ try{localStorage.setItem('ai_tasks',JSON.stringify(tasks))}catch(e){} }
-function sCfg(){ try{localStorage.setItem('ai_cfg',JSON.stringify(cfg))}catch(e){} }
+function load(){try{const c=localStorage.getItem('aic');if(c)cfg={...cfg,...JSON.parse(c)};const t=localStorage.getItem('ait');if(t)tasks=JSON.parse(t)}catch(e){}}
+function sTasks(){try{localStorage.setItem('ait',JSON.stringify(tasks))}catch(e){}}
+function sCfg(){try{localStorage.setItem('aic',JSON.stringify(cfg))}catch(e){}}
 load();
 
 // ===== API =====
-async function apiChat(messages, sig) {
-  const r = await fetch(`${cfg.apiBaseUrl.replace(/\/$/,'')}/v1/chat/completions`, {
-    method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},
-    body: JSON.stringify({model:cfg.visionModel, messages, max_tokens:1200, temperature:0.7}), signal:sig
+async function apiChat(msgs, sig){
+  const r = await fetch(cfg.apiBaseUrl.replace(/\/$/,'')+'/v1/chat/completions',{
+    method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},
+    body:JSON.stringify({model:cfg.visionModel,messages:msgs,max_tokens:1200,temperature:0.7}),signal:sig
   });
-  if (!r.ok) throw new Error(`识图API失败 (${r.status})`);
-  const d = await r.json();
-  return d.choices[0].message.content;
+  if(!r.ok) throw new Error(`识图失败(${r.status})`);
+  return (await r.json()).choices[0].message.content;
 }
 
-async function apiImg(prompt, sig) {
-  const size = RATIO_MAP[cfg.ratio] || '1024x1024';
-  const body = {model:'gpt-image-2', prompt, size, quality:cfg.quality};
-
-  const r = await fetch(`${cfg.apiBaseUrl.replace(/\/$/,'')}/v1/images/generations`, {
-    method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},
-    body: JSON.stringify(body), signal:sig
+async function apiImg(prompt, sig){
+  const body = {model:'gpt-image-2', prompt, size:RATIO[cfg.ratio]||'1024x1024', quality:cfg.quality};
+  const r = await fetch(cfg.apiBaseUrl.replace(/\/$/,'')+'/v1/images/generations',{
+    method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},
+    body:JSON.stringify(body),signal:sig
   });
-  if (!r.ok) {
-    const et = await r.text().catch(()=>'');
-    throw new Error(`出图失败 (${r.status}): ${et}`);
-  }
-  const d = await r.json();
-  return (d.data||[]).map(x => x.b64_json ? `data:image/png;base64,${x.b64_json}` : x.url || null).filter(Boolean);
+  if(!r.ok){const e=await r.text().catch(()=>'');throw new Error(`出图失败(${r.status}): ${e}`)}
+  return (await r.json()).data||[];
 }
 
-async function analyze(b64, sig) {
+async function analyze(b64, sig){
   return apiChat([
-    {role:'system', content:PROMPT_STYLE},
-    {role:'user', content:[{type:'image_url',image_url:{url:b64}},{type:'text',text:'请分析此图片的风格特征。'}]}
-  ], sig);
-}
-
-function fullPrompt(task) {
-  let p = task.prompt;
-  const refs = [...(task.referenceImages||[])];
-  return p + PROMPT_BASE;
+    {role:'system',content:STYLE_PROMPT},
+    {role:'user',content:[{type:'image_url',image_url:{url:b64}},{type:'text',text:'请分析此图片的风格。'}]}
+  ],sig);
 }
 
 // ===== Tasks =====
-function newTask() {
-  const t = {id:String(Date.now()), title:`任务 ${tasks.length+1}`, prompt:'', count:1, referenceImages:[], materialImages:[], status:'pending', results:[], error:null, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString()};
-  tasks.unshift(t);
-  activeId = t.id;
+function newTask(){
+  const t = {id:String(Date.now()), title:'新对话', messages:[], createdAt:new Date().toISOString()};
+  tasks.unshift(t); activeId=t.id; sTasks(); render();
+}
+
+function delTask(id){
+  const t=tasks.find(x=>x.id===id);
+  if(t?.abort) t.abort.abort();
+  tasks=tasks.filter(x=>x.id!==id);
+  if(activeId===id) activeId=tasks[0]?.id||null;
   sTasks(); render();
 }
 
-function delTask(id) {
-  const t = tasks.find(x=>x.id===id);
-  if (t?.abortController) t.abortController.abort();
-  tasks = tasks.filter(x=>x.id!==id);
-  if (activeId===id) activeId = tasks[0]?.id || null;
-  sTasks(); render();
-}
+function getActive(){return tasks.find(t=>t.id===activeId)||null}
 
-function getActive(){ return tasks.find(t=>t.id===activeId)||null; }
-
-async function runTask(id) {
-  const t = tasks.find(x=>x.id===id);
-  if (!t || t.status==='running') return;
-  if (!t.prompt.trim()) { toast('请输入提示词','er'); return; }
-  if (!cfg.apiKey) { toast('请先配置API Key','er'); return; }
+async function sendMessage(taskId, prompt, refs){
+  const t=tasks.find(x=>x.id===taskId);
+  if(!t||t.generating)return;
+  if(!prompt.trim()){toast('请输入提示词','er');return}
+  if(!cfg.apiKey){toast('请先配置API Key','er');return}
 
   const ctrl = new AbortController();
-  t.abortController = ctrl;
-  t.status = 'running';
-  t.error = null;
+  t.abort=ctrl;
+  t.generating=true;
+
+  // Build message
+  const msg = {
+    role:'user',
+    prompt,
+    refs: refs||[],
+    timestamp: Date.now()
+  };
+  t.messages.push(msg);
+
+  // Create placeholder for AI response
+  const aiMsg = {role:'ai', images:[], status:'loading', timestamp:Date.now()};
+  t.messages.push(aiMsg);
+
+  // Update title from first prompt
+  if(t.messages.length<=2) t.title = prompt.slice(0,24)+(prompt.length>24?'...':'');
+
   t.updatedAt = new Date().toISOString();
-  sTasks(); renderList(); renderMain();
+  sTasks(); render();
 
   try {
-    let p = t.prompt;
+    let fullPrompt = prompt;
 
-    // Analyze reference & material images in parallel
-    if (t.referenceImages.length || t.materialImages.length) {
-      setStatus(id, 'running', '分析参考图...');
-      const allImgs = [...t.referenceImages.map(i=>({b64:i,type:'style'})), ...t.materialImages.map(i=>({b64:i,type:'mat'}))];
-      const results = await Promise.all(allImgs.map(img => analyze(img.b64, ctrl.signal)));
-      const parts = results.map((r,i) => {
-        const label = allImgs[i].type === 'style' ? '风格参考' : '素材描述';
-        return `${label}: ${r}`;
-      });
-      p = `${t.prompt}\n\n--- 参考信息 ---\n${parts.join('\n\n')}`;
+    // Analyze references
+    if(refs && refs.length){
+      const parts = await Promise.all(refs.map(r=>analyze(r,ctrl.signal)));
+      fullPrompt += '\n\n--- 参考图分析 ---\n'+parts.map((p,i)=>`参考图${i+1}: ${p}`).join('\n\n');
     }
 
-    p += PROMPT_BASE;
-    setStatus(id, 'running', '正在生成图片...');
+    fullPrompt += '\n\nGenerate a professional, high-quality commercial-grade image with exact composition and precise colors.';
 
-    // Generate multiple images in parallel for count > 1
-    const count = t.count || 1;
-    const batchSize = Math.min(count, 4); // parallel batch size
-    const allUrls = [];
+    const data = await apiImg(fullPrompt, ctrl.signal);
+    const urls = data.map(x=>{
+      if(x.b64_json&&x.b64_json.length>0) return `data:image/png;base64,${x.b64_json}`;
+      if(x.url&&x.url.length>0) return x.url;
+      return null;
+    }).filter(Boolean);
 
-    for (let batch = 0; batch < Math.ceil(count / batchSize); batch++) {
-      const remaining = count - allUrls.length;
-      const thisBatch = Math.min(remaining, batchSize);
+    aiMsg.images = urls;
+    aiMsg.status = urls.length?'done':'error';
+    if(!urls.length) aiMsg.error = '未获取到图片';
 
-      if (thisBatch <= 0) break;
-
-      setStatus(id, 'running', `正在生成... (${allUrls.length}/${count})`);
-
-      const batchPromises = Array.from({length: thisBatch}, () => apiImg(p, ctrl.signal));
-      const batchResults = await Promise.all(batchPromises);
-
-      for (const urls of batchResults) {
-        if (urls.length > 0) allUrls.push(urls[0]);
-      }
-    }
-
-    if (!allUrls.length) throw new Error('未获取到图片');
-    t.results = allUrls;
-    t.status = 'done';
-
-  } catch(e) {
-    if (e.name === 'AbortError') { t.status='pending'; t.error='已取消'; }
-    else { t.status='error'; t.error=e.message; }
+  } catch(e){
+    aiMsg.status = 'error';
+    aiMsg.error = e.name==='AbortError'?'已取消':e.message;
   }
 
+  t.generating = false;
+  delete t.abort;
   t.updatedAt = new Date().toISOString();
-  delete t.abortController;
   sTasks(); render();
-}
-
-function setStatus(id, st, msg) {
-  const t = tasks.find(x=>x.id===id);
-  if (t) { t.status=st; t.statusMessage=msg; t.updatedAt=new Date().toISOString(); sTasks(); renderList(); }
-}
-
-async function doModify(id, text, newRefs) {
-  const t = tasks.find(x=>x.id===id);
-  if (!t || t.status==='running') return;
-  t.prompt = `基于之前的结果"${t.prompt}"，修改要求：${text}`;
-  if (newRefs) t.referenceImages = [...(t.referenceImages||[]), ...newRefs];
-  await runTask(id);
 }
 
 // ===== Render =====
-function render() { renderList(); renderMain(); }
+function render(){renderList();renderChat()}
 
-function renderList() {
-  const c = document.getElementById('tl');
-  if (!tasks.length) { c.innerHTML='<div class="es"><div class="ei">📋</div><p>暂无任务</p></div>'; return; }
-  c.innerHTML = tasks.map(t => {
+function renderList(){
+  const c=document.getElementById('tl');
+  if(!tasks.length){c.innerHTML='<div class="es"><div class="ei">💬</div><p>暂无对话</p></div>';return}
+  c.innerHTML=tasks.map(t=>{
+    const thumb = getThumb(t);
     const tm = fmtTime(t.updatedAt||t.createdAt);
-    const sc = {pending:'p',running:'r',done:'d',error:'e'}[t.status]||'p';
-    const sl = {pending:'等待',running:'生成中',done:'完成',error:'失败'}[t.status]||t.status;
-    const pv = t.prompt ? t.prompt.slice(0,28)+'...' : '未输入提示词';
     return `<div class="ti ${t.id===activeId?'act':''}" onclick="pick('${t.id}')">
-      <div class="ti-top"><div class="ti-title">${esc(t.title)}</div><div class="ti-time">${tm}</div></div>
-      <div class="ti-st"><span class="dot ${sc}"></span><span>${sl}</span>${t.status==='done'?`<span style="margin-left:auto">${t.results.length}张</span>`:''}</div>
-      ${t.status==='running'?'<div class="lbar"><i></i></div>':''}
-      <div class="ti-prev">${esc(pv)}</div>
-      <button class="del" onclick="event.stopPropagation();delTask('${t.id}')" title="删除">×</button>
+      <div class="ti-thumb">${thumb?`<img src="${thumb}">`:'<div class="ph"></div>'}</div>
+      <div class="ti-info"><div class="ti-title">${esc(t.title)}</div><div class="ti-time">${tm}</div></div>
+      <button class="del-btn" onclick="event.stopPropagation();delTask('${t.id}')" title="删除">×</button>
     </div>`;
   }).join('');
 }
 
-function renderMain() {
-  const mn = document.getElementById('mn');
-  const t = getActive();
-  if (!t) { renderWs(mn); return; }
-  if (t.results.length || t.status==='running' || t.status==='error') renderDetail(mn, t);
-  else renderForm(mn, t);
-}
-
-function renderWs(c) {
-  c.innerHTML = `<div class="mn-bar"><h2>新建任务</h2></div><div class="mn-body"><div class="ws">
-    <div class="ws-h"><h2>开始生成</h2><p>输入提示词，一键生成高质量图片</p></div>
-    <div class="fg">
-      <div class="fs ff"><h3>✨ 提示词</h3><textarea class="ta" id="tp" placeholder="描述你想要的图片，例如：为国潮品牌设计海报，熊猫在竹林中泡茶，墨绿金色配色..."></textarea></div>
-      <div class="fs"><h3>🖼️ 风格参考图 <span style="color:var(--text3);font-weight:400;font-size:.75rem">可选</span></h3>
-        <div class="ua" onclick="document.getElementById('ru').click()"><div class="ui">📤</div><p>点击上传</p></div>
-        <input type="file" id="ru" accept="image/*" multiple style="display:none" onchange="onFile(this,'ref')"><div class="pl" id="rp"></div>
-      </div>
-      <div class="fs"><h3>📎 素材图 <span style="color:var(--text3);font-weight:400;font-size:.75rem">可选</span></h3>
-        <div class="ua" onclick="document.getElementById('mu').click()"><div class="ui">📤</div><p>点击上传</p></div>
-        <input type="file" id="mu" accept="image/*" multiple style="display:none" onchange="onFile(this,'mat')"><div class="pl" id="mp"></div>
-      </div>
-      <div class="fs"><h3>⚙️ 设置</h3>
-        <div class="fr">
-          <div><label class="lb">数量</label><input class="fi" type="number" id="tc2" min="1" max="10" value="1" style="width:70px;text-align:center"></div>
-          <div><label class="lb">比例</label><select class="fs2" id="tr"><option value="1:1">1:1</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="9:16">9:16</option><option value="16:9">16:9</option></select></div>
-        </div>
-      </div>
-    </div>
-  </div></div>
-  <div class="gbar"><span style="font-size:.8rem;color:var(--text2)">出图: <b style="color:var(--text)">gpt-image-2</b> | 识图: <b style="color:var(--text)">${cfg.visionModel}</b></span><button class="btn-gen" onclick="doGen()">🚀 一键生成</button></div>`;
-  const re = document.getElementById('tr'); if(re) re.value = cfg.ratio;
-}
-
-function renderForm(c, t) {
-  c.innerHTML = `<div class="mn-bar"><h2>编辑任务</h2><div style="display:flex;gap:6px">
-    <button class="bs" onclick="delTask('${t.id}')">🗑️ 删除</button></div></div>
-  <div class="mn-body"><div class="ws">
-    <div class="fg">
-      <div class="fs ff"><h3>✨ 提示词</h3><textarea class="ta" id="tp">${esc(t.prompt)}</textarea></div>
-      <div class="fs"><h3>🖼️ 风格参考图</h3>
-        <div class="ua" onclick="document.getElementById('ru').click()"><p>点击上传</p></div>
-        <input type="file" id="ru" accept="image/*" multiple style="display:none" onchange="onFile(this,'ref')">
-        <div class="pl">${(t.referenceImages||[]).map((img,i)=>`<div class="pi"><img src="${img}"><div class="rm" onclick="delTI('${t.id}','ref',${i})">×</div></div>`).join('')}</div>
-      </div>
-      <div class="fs"><h3>📎 素材图</h3>
-        <div class="ua" onclick="document.getElementById('mu').click()"><p>点击上传</p></div>
-        <input type="file" id="mu" accept="image/*" multiple style="display:none" onchange="onFile(this,'mat')">
-        <div class="pl">${(t.materialImages||[]).map((img,i)=>`<div class="pi"><img src="${img}"><div class="rm" onclick="delTI('${t.id}','mat',${i})">×</div></div>`).join('')}</div>
-      </div>
-      <div class="fs"><h3>⚙️ 数量</h3><input class="fi" type="number" id="tc2" min="1" max="10" value="${t.count||1}" style="width:70px;text-align:center"></div>
-    </div>
-  </div></div>
-  <div class="gbar"><button class="btn-gen" onclick="doGen()">🚀 一键生成</button></div>`;
-}
-
-function renderDetail(c, t) {
-  const run = t.status==='running';
-  const err = t.status==='error';
-  c.innerHTML = `<div class="mn-bar"><h2>${esc(t.title)}</h2><div style="display:flex;gap:6px">
-    ${run?`<button class="bs" onclick="cancelT('${t.id}')">⏹ 取消</button>`:''}
-    ${!run?`<button class="bs" onclick="resetT('${t.id}')">✏️ 编辑</button>`:''}
-    <button class="bs" onclick="delTask('${t.id}')">🗑️ 删除</button></div></div>
-  <div class="mn-body"><div class="td">
-    <div class="dh"><div class="dhi"><h3>
-      ${run?'<span class="dot r" style="display:inline-block;margin-right:5px"></span>生成中...':
-        err?'<span class="dot e" style="display:inline-block;margin-right:5px"></span>失败':
-        `<span class="dot d" style="display:inline-block;margin-right:5px"></span>完成 · ${t.results.length}张`}
-    </h3><p>${t.statusMessage||(err?t.error:'')}</p></div></div>
-    <div class="dc">
-      <div class="dr">
-        ${run?`<div class="es"><div class="ld" style="margin-bottom:14px"></div><p>生成中，请稍候...</p><p style="font-size:.75rem;margin-top:6px;color:var(--text3)">${t.statusMessage||''}</p></div>`:
-        err?`<div class="es"><div class="ei">⚠️</div><p style="color:var(--err)">${esc(t.error)}</p><button class="bs" style="margin-top:10px" onclick="runTask('${t.id}')">🔄 重试</button></div>`:
-        `<div class="drg">${t.results.map((u,i)=>`<div class="rc"><img src="${u}" alt="${i+1}"><div class="ra"><button class="bs" onclick="dl('${u}','${esc(t.title)}_${i+1}')">💾 下载</button><button class="bs" onclick="window.open('${u}','_blank')">🔍 原图</button></div></div>`).join('')}</div>`}
-      </div>
-      ${!run?`<div class="dm"><div class="dm-h">修改意见</div><div class="dm-b">
-        <div><label class="lb">修改要求</label><textarea class="ta" id="modP" style="min-height:70px" placeholder="例如：颜色再鲜艳些，熊猫改成微笑..."></textarea></div>
-        <div><label class="lb">补充参考图</label>
-          <div class="ua" style="padding:12px;min-height:60px" onclick="document.getElementById('mru').click()"><p style="font-size:.75rem">点击上传</p></div>
-          <input type="file" id="mru" accept="image/*" multiple style="display:none" onchange="onModFile(this)">
-          <div class="pl" id="modPv"></div>
-        </div>
-        <button class="bm" id="modBtn" onclick="doMod('${t.id}')">🚀 提交修改并重新生成</button>
-      </div></div>`:''}
-    </div>
-  </div></div>`;
-
-  if (run) setTimeout(poll, 2500);
-}
-
-function poll() {
-  const t = tasks.find(x=>x.id===activeId);
-  if (t && t.status==='running') {
-    renderDetail(document.getElementById('mn'), t);
-    renderList();
+function getThumb(t){
+  for(const m of t.messages){
+    if(m.images&&m.images.length) return m.images[0];
   }
+  return null;
+}
+
+function renderChat(){
+  const area = document.getElementById('chatArea');
+  const t = getActive();
+  if(!t){
+    area.innerHTML='<div class="es"><div class="ei"></div><p>选择或创建一个新对话开始</p></div>';
+    return;
+  }
+
+  let msgs = t.messages.map((m,i)=>{
+    if(m.role==='user'){
+      return `<div class="chat-msg">
+        <div class="msg-label"><span class="dot" style="background:var(--text3)"></span>你</div>
+        <div class="msg-prompt">${esc(m.prompt)}</div>
+        ${m.refs&&m.refs.length?`<div class="msg-refs">${m.refs.map(r=>`<img src="${r}">`).join('')}</div>`:''}
+      </div>`;
+    }
+    if(m.role==='ai'){
+      if(m.status==='loading'){
+        return `<div class="chat-msg"><div class="msg-label"><span class="dot"></span>AI 生成中</div>
+          <div class="msg-loading"><div class="spin"></div><span>正在生成图片...</span></div></div>`;
+      }
+      if(m.status==='error'){
+        return `<div class="chat-msg"><div class="msg-label"><span class="dot" style="background:var(--err)"></span>生成失败</div>
+          <div class="msg-error">${esc(m.error||'未知错误')}</div></div>`;
+      }
+      return `<div class="chat-msg">
+        <div class="msg-label"><span class="dot"></span>AI · ${m.images.length}张</div>
+        <div class="msg-images">${m.images.map((u,j)=>`<div><img src="${u}" onclick="openLB('${u}')" loading="lazy"><div class="msg-img-actions"><button class="bs" onclick="dlImg('${u}','${i}_${j}')">💾 下载</button></div></div>`).join('')}</div>
+      </div>`;
+    }
+    return '';
+  }).join('');
+
+  area.innerHTML = `
+    <div class="chat-h"><h2>${esc(t.title)}</h2>
+      <div class="acts"><button class="bs" onclick="delTask('${t.id}')">️ 删除</button></div>
+    </div>
+    <div class="chat-body" id="chatBody">${msgs}</div>
+    <div class="input-bar">
+      <div class="input-row">
+        <div class="input-wrap">
+          <div class="input-top">
+            <label onclick="document.getElementById('inpRef').click()">📎 参考图
+              <input type="file" id="inpRef" accept="image/*" multiple style="display:none" onchange="onInpRef(this)">
+            </label>
+            <div class="img-preview" id="inpPv"></div>
+          </div>
+          <textarea class="inp" id="chatInp" placeholder="输入描述，或输入修改意见继续生成..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+          <div class="input-bottom">
+            <select id="inpRatio"><option value="1:1">1:1</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="9:16">9:16</option><option value="16:9">16:9</option></select>
+            <span>${t.generating?'生成中...':''}</span>
+          </div>
+        </div>
+        <button class="btn-send" id="sendBtn" onclick="sendChat()" ${t.generating?'disabled':''}>发送</button>
+      </div>
+    </div>`;
+
+  // Set ratio from config
+  const re = document.getElementById('inpRatio');
+  if(re) re.value = cfg.ratio || '1:1';
+
+  // Scroll to bottom
+  setTimeout(()=>{
+    const body=document.getElementById('chatBody');
+    if(body) body.scrollTop=body.scrollHeight;
+  },50);
+
+  // Auto-focus
+  setTimeout(()=>{const inp=document.getElementById('chatInp');if(inp&&!t.generating)inp.focus()},100);
 }
 
 // ===== Handlers =====
-function pick(id) { activeId=id; render(); }
+function pick(id){activeId=id;render()}
 
-function delTI(id, type, idx) {
-  const t = tasks.find(x=>x.id===id);
-  if (!t) return;
-  const arr = type==='ref' ? t.referenceImages : t.materialImages;
-  arr.splice(idx,1); sTasks(); renderMain();
+async function onInpRef(inp){
+  for(const f of inp.files){
+    const d = await new Promise(r=>{const rd=new FileReader();rd.onload=e=>r(e.target.result);rd.readAsDataURL(f)});
+    pendingImgs.push(await compress(d));
+  }
+  renderPending();
+  inp.value='';
 }
 
-function cancelT(id) { const t=tasks.find(x=>x.id===id); if(t?.abortController) t.abortController.abort(); }
+function renderPending(){
+  const c=document.getElementById('inpPv');
+  if(!c)return;
+  c.innerHTML=pendingImgs.map((img,i)=>`<div style="position:relative;display:inline-block">
+    <img src="${img}"><div class="rm" onclick="pendingImgs.splice(${i},1);renderPending()">×</div></div>`).join('');
+}
 
-function resetT(id) { const t=tasks.find(x=>x.id===id); if(t){t.results=[];t.status='pending';t.error=null;sTasks();render();} }
+function sendChat(){
+  const inp=document.getElementById('chatInp');
+  const ratioEl=document.getElementById('inpRatio');
+  if(!inp)return;
+  const prompt=inp.value.trim();
+  if(!prompt)return;
 
-async function compress(b64) {
-  return new Promise(r => {
-    const img = new Image();
-    img.onload = () => {
-      const cv = document.createElement('canvas');
-      let w=img.width, h=img.height, mx=1024;
+  // Save ratio
+  if(ratioEl) cfg.ratio=ratioEl.value;
+
+  const refs=[...pendingImgs];
+  pendingImgs=[];
+  inp.value='';
+
+  // Clear pending previews
+  const pv=document.getElementById('inpPv');
+  if(pv) pv.innerHTML='';
+
+  sendMessage(activeId, prompt, refs);
+}
+
+async function compress(b64){
+  return new Promise(r=>{
+    const img=new Image();
+    img.onload=()=>{
+      const cv=document.createElement('canvas');
+      let w=img.width,h=img.height,mx=1024;
       if(w>mx||h>mx){if(w>h){h=h*mx/w;w=mx}else{w=w*mx/h;h=mx}}
       cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
       r(cv.toDataURL('image/jpeg',.85));
     };
-    img.src = b64;
+    img.src=b64;
   });
 }
 
-async function onFile(inp, type) {
-  const arr = type==='ref' ? tmpRef : tmpMat;
-  const pid = type==='ref' ? 'rp' : 'mp';
-  for (const f of inp.files) {
-    const d = await new Promise(r => { const rd=new FileReader(); rd.onload=e=>r(e.target.result); rd.readAsDataURL(f); });
-    arr.push(await compress(d));
-  }
-  renderPreviews(pid, arr, type);
-  inp.value='';
+function dlImg(url,fn){
+  const a=document.createElement('a');a.href=url;a.download=`ai_${fn}.png`;
+  document.body.appendChild(a);a.click();a.remove();
 }
 
-async function onModFile(inp) {
-  for (const f of inp.files) {
-    const d = await new Promise(r => { const rd=new FileReader(); rd.onload=e=>r(e.target.result); rd.readAsDataURL(f); });
-    tmpMod.push(await compress(d));
-  }
-  renderModPreviews();
-  inp.value='';
-}
-
-function renderPreviews(id, arr, type) {
-  const c = document.getElementById(id);
-  if(!c) return;
-  c.innerHTML = arr.map((img,i)=>`<div class="pi"><img src="${img}"><div class="rm" onclick="rmTemp('${type}',${i})">×</div></div>`).join('');
-}
-
-function renderModPreviews() {
-  const c = document.getElementById('modPv');
-  if(!c) return;
-  c.innerHTML = tmpMod.map((img,i)=>`<div class="pi"><img src="${img}"><div class="rm" onclick="tmpMod.splice(${i},1);renderModPreviews()">×</div></div>`).join('');
-}
-
-function rmTemp(type, idx) {
-  const arr = type==='ref' ? tmpRef : tmpMat;
-  arr.splice(idx,1);
-  renderPreviews(type==='ref'?'rp':'mp', arr, type);
-}
-
-async function doGen() {
-  const pEl = document.getElementById('tp');
-  const cEl = document.getElementById('tc2');
-  const rEl = document.getElementById('tr');
-  let t = getActive();
-
-  const prompt = pEl?.value?.trim() || '';
-  if (!prompt) { toast('请输入提示词','er'); return; }
-
-  if (!t) {
-    t = {id:String(Date.now()), title:prompt.slice(0,20)+(prompt.length>20?'...':''), prompt, count:parseInt(cEl?.value||'1'), referenceImages:[...tmpRef], materialImages:[...tmpMat], status:'pending', results:[], error:null, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString()};
-    if (rEl) t.ratio = rEl.value;
-    tasks.unshift(t); activeId=t.id;
-    tmpRef=[];tmpMat=[];
-    sTasks(); render();
-  } else {
-    t.prompt = prompt;
-    t.count = parseInt(cEl?.value||'1');
-    t.referenceImages = [...tmpRef];
-    t.materialImages = [...tmpMat];
-    t.title = prompt.slice(0,20)+(prompt.length>20?'...':'') || t.title;
-    if (rEl) t.ratio = rEl.value;
-    tmpRef=[];tmpMat=[];
-    sTasks(); render();
-  }
-
-  // Async - don't block UI
-  runTask(t.id);
-}
-
-async function doMod(id) {
-  const mp = document.getElementById('modP')?.value?.trim();
-  if (!mp) { toast('请输入修改意见','er'); return; }
-  const btn = document.getElementById('modBtn');
-  if (btn) btn.disabled = true;
-  await doModify(id, mp, [...tmpMod]);
-  tmpMod = [];
-}
-
-function dl(url, fn) {
-  const a = document.createElement('a'); a.href=url; a.download=fn+'.png';
-  document.body.appendChild(a); a.click(); a.remove();
+function openLB(url){
+  const lb=document.getElementById('lb');
+  document.getElementById('lbImg').src=url;
+  lb.classList.add('a');
 }
 
 // ===== Settings =====
-function openSet() {
+function openSet(){
   document.getElementById('sUrl').value=cfg.apiBaseUrl;
   document.getElementById('sKey').value=cfg.apiKey;
   document.getElementById('sVis').value=cfg.visionModel;
-  document.getElementById('sRatio').value=cfg.ratio;
   document.getElementById('sQual').value=cfg.quality;
   document.getElementById('mo').classList.add('a');
 }
-function closeSet() { document.getElementById('mo').classList.remove('a'); }
-function saveSet() {
-  cfg.apiBaseUrl = document.getElementById('sUrl').value.replace(/\/$/,'');
-  cfg.apiKey = document.getElementById('sKey').value.trim();
-  cfg.visionModel = document.getElementById('sVis').value;
-  cfg.ratio = document.getElementById('sRatio').value;
-  cfg.quality = document.getElementById('sQual').value;
-  sCfg(); closeSet(); toast('已保存','ok'); render();
+function closeSet(){document.getElementById('mo').classList.remove('a')}
+function saveSet(){
+  cfg.apiBaseUrl=document.getElementById('sUrl').value.replace(/\/$/,'');
+  cfg.apiKey=document.getElementById('sKey').value.trim();
+  cfg.visionModel=document.getElementById('sVis').value;
+  cfg.quality=document.getElementById('sQual').value;
+  sCfg();closeSet();toast('已保存','ok');render();
 }
 
 // ===== Utils =====
-function fmtTime(s) {
-  if(!s) return '';
-  const d=new Date(s), n=new Date(), diff=n-d;
-  if(diff<60000) return '刚刚';
-  if(diff<3600000) return Math.floor(diff/60000)+'分前';
-  if(diff<86400000) return Math.floor(diff/3600000)+'小时前';
-  return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+function fmtTime(s){
+  if(!s)return'';
+  const d=new Date(s),n=new Date(),diff=n-d;
+  if(diff<60000)return'刚刚';
+  if(diff<3600000)return Math.floor(diff/60000)+'分前';
+  if(diff<86400000)return Math.floor(diff/3600000)+'小时前';
+  return`${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
-function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-function toast(msg,type='inf'){const c=document.getElementById('tc'),t=document.createElement('div');t.className=`tt ${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000);}
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function toast(msg,type=''){const c=document.getElementById('tc'),t=document.createElement('div');t.className=`tt ${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),2500)}
 
 // ===== Init =====
-function init() {
+function init(){
   if(!tasks.length) activeId=null;
   else if(!activeId||!tasks.find(t=>t.id===activeId)) activeId=tasks[0].id;
   render();
+  // Auto-scroll running tasks
   setInterval(()=>{
-    const rt=tasks.find(t=>t.status==='running');
-    if(rt) { renderList(); if(rt.id===activeId) renderDetail(document.getElementById('mn'),rt); }
-  }, 3000);
+    const t=getActive();
+    if(t&&t.generating) render();
+  },3000);
 }
 init();
 </script>
