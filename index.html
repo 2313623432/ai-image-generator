@@ -234,7 +234,8 @@ function delTask(id){
 
 function getActive(){return tasks.find(t=>t.id===activeId)||null}
 
-async function sendMessage(taskId, prompt, refs, mats){
+async function sendMessage(taskId, prompt, refs, mats, count){
+  count = count || 1;
   const t=tasks.find(x=>x.id===taskId);
   if(!t||t.generating)return;
   if(!prompt.trim()){toast('请输入提示词','er');return}
@@ -244,7 +245,7 @@ async function sendMessage(taskId, prompt, refs, mats){
   t.abort=ctrl;
   t.generating=true;
 
-  const msg = {role:'user', prompt, refs:refs||[], mats:mats||[], timestamp:Date.now()};
+  const msg = {role:'user', prompt, refs:refs||[], mats:mats||[], count, timestamp:Date.now()};
   t.messages.push(msg);
 
   const aiMsg = {role:'ai', images:[], status:'loading', timestamp:Date.now()};
@@ -271,16 +272,32 @@ async function sendMessage(taskId, prompt, refs, mats){
 
     fullPrompt += GEN_REQUIREMENTS;
 
-    const data = await apiImg(fullPrompt, ctrl.signal);
-    const urls = data.map(x=>{
-      if(x.b64_json&&x.b64_json.length>0) return `data:image/png;base64,${x.b64_json}`;
-      if(x.url&&x.url.length>0) return x.url;
-      return null;
-    }).filter(Boolean);
+    // Generate in parallel batches
+    const batchSize = Math.min(count, 4);
+    const allUrls = [];
 
-    aiMsg.images = urls;
-    aiMsg.status = urls.length?'done':'error';
-    if(!urls.length) aiMsg.error = '未获取到图片';
+    for(let batch=0; batch<Math.ceil(count/batchSize); batch++){
+      const remaining = count - allUrls.length;
+      const thisBatch = Math.min(remaining, batchSize);
+      if(thisBatch <= 0) break;
+
+      aiMsg.statusMsg = `生成中 (${allUrls.length}/${count})`;
+      render();
+
+      const batchResults = await Promise.all(Array.from({length:thisBatch}, ()=>apiImg(fullPrompt, ctrl.signal)));
+      for(const data of batchResults){
+        const urls = data.map(x=>{
+          if(x.b64_json&&x.b64_json.length>0) return `data:image/png;base64,${x.b64_json}`;
+          if(x.url&&x.url.length>0) return x.url;
+          return null;
+        }).filter(Boolean);
+        if(urls.length) allUrls.push(urls[0]);
+      }
+    }
+
+    aiMsg.images = allUrls;
+    aiMsg.status = allUrls.length?'done':'error';
+    if(!allUrls.length) aiMsg.error = '未获取到图片';
 
   } catch(e){
     aiMsg.status = 'error';
@@ -337,7 +354,7 @@ function renderChat(){
     if(m.role==='ai'){
       if(m.status==='loading'){
         return `<div class="chat-msg"><div class="msg-label"><span class="dot"></span>AI 生成中</div>
-          <div class="msg-loading"><div class="spin"></div><span>正在生成图片...</span></div></div>`;
+          <div class="msg-loading"><div class="spin"></div><span>${m.statusMsg||'正在生成图片...'}</span></div></div>`;
       }
       if(m.status==='error'){
         return `<div class="chat-msg"><div class="msg-label"><span class="dot" style="background:var(--err)"></span>生成失败</div>
@@ -371,6 +388,7 @@ function renderChat(){
           <textarea class="inp" id="chatInp" placeholder="输入描述，或输入修改意见继续生成..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
           <div class="input-bottom">
             <select id="inpRatio"><option value="1:1">1:1</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="9:16">9:16</option><option value="16:9">16:9</option></select>
+            <select id="inpCount" style="width:60px"><option value="1">1张</option><option value="2">2张</option><option value="3">3张</option><option value="4">4张</option></select>
             <span>${t.generating?'生成中...':''}</span>
           </div>
         </div>
@@ -381,6 +399,8 @@ function renderChat(){
   // Set ratio from config
   const re = document.getElementById('inpRatio');
   if(re) re.value = cfg.ratio || '1:1';
+  const ce = document.getElementById('inpCount');
+  if(ce) ce.value = '1';
 
   // Scroll to bottom
   setTimeout(()=>{
@@ -422,18 +442,20 @@ function rmPending(type,idx){
 function sendChat(){
   const inp=document.getElementById('chatInp');
   const ratioEl=document.getElementById('inpRatio');
+  const countEl=document.getElementById('inpCount');
   if(!inp)return;
   const prompt=inp.value.trim();
   if(!prompt)return;
   if(ratioEl) cfg.ratio=ratioEl.value;
 
   const refs=[...pendingRefs], mats=[...pendingMats];
+  const count = parseInt(countEl?.value||'1');
   pendingRefs=[];pendingMats=[];
   inp.value='';
   const pv=document.getElementById('inpPv');
   if(pv) pv.innerHTML='';
 
-  sendMessage(activeId, prompt, refs, mats);
+  sendMessage(activeId, prompt, refs, mats, count);
 }
 
 async function compress(b64){
